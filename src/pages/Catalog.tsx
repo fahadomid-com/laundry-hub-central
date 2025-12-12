@@ -92,11 +92,14 @@ export default function Catalog() {
   const [newService, setNewService] = useState({
     name: "",
     category: "Wash & Fold",
+    serviceOption: "Wash & Iron",
     price: 0,
     unit: "piece",
     duration: "24h",
     description: "",
   });
+  const [showCustomServiceOption, setShowCustomServiceOption] = useState(false);
+  const [customServiceOption, setCustomServiceOption] = useState("");
 
   const [newOffer, setNewOffer] = useState({
     name: "",
@@ -121,7 +124,7 @@ export default function Catalog() {
       active: true,
     };
     setServices((prev) => [...prev, service]);
-    setNewService({ name: "", category: "Wash & Fold", price: 0, unit: "piece", duration: "24h", description: "" });
+    setNewService({ name: "", category: "Wash & Fold", serviceOption: "Wash & Iron", price: 0, unit: "piece", duration: "24h", description: "" });
     setAddServiceOpen(false);
     toast({ title: "Service added", description: `${service.name} has been added to the catalog` });
   };
@@ -389,6 +392,55 @@ export default function Catalog() {
                       <SelectItem value="Other">Other</SelectItem>
                       <SelectItem value="__add_new__" className="text-primary font-medium">
                         + Add Extra Service
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>Service Options</Label>
+                {showCustomServiceOption ? (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter custom option"
+                      value={customServiceOption}
+                      onChange={(e) => setCustomServiceOption(e.target.value)}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        if (customServiceOption.trim()) {
+                          setNewService((p) => ({ ...p, serviceOption: customServiceOption.trim() }));
+                          setShowCustomServiceOption(false);
+                          setCustomServiceOption("");
+                        }
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                ) : (
+                  <Select
+                    value={newService.serviceOption}
+                    onValueChange={(v) => {
+                      if (v === "__add_extra__") {
+                        setShowCustomServiceOption(true);
+                      } else {
+                        setNewService((p) => ({ ...p, serviceOption: v }));
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="Wash & Iron">Wash & Iron</SelectItem>
+                      <SelectItem value="Iron">Iron</SelectItem>
+                      <SelectItem value="Dry Clean">Dry Clean</SelectItem>
+                      <SelectItem value="Press">Press</SelectItem>
+                      <SelectItem value="Fold">Fold</SelectItem>
+                      <SelectItem value="__add_extra__" className="text-primary font-medium">
+                        + Add Extra Option
                       </SelectItem>
                     </SelectContent>
                   </Select>
