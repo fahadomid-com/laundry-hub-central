@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Search, Bell, Plus, User, LogOut, Settings } from "lucide-react";
+import { Search, User, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
@@ -13,12 +12,10 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { NotificationsDropdown } from "@/components/dashboard/NotificationsDropdown";
-import { AddOrderDialog } from "@/components/dashboard/AddOrderDialog";
 
 export function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [addOrderOpen, setAddOrderOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -40,10 +37,6 @@ export function Header() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="icon" className="h-9 w-9 rounded-lg" onClick={() => setAddOrderOpen(true)}>
-            <Plus className="h-4 w-4" />
-          </Button>
-
           <NotificationsDropdown />
 
           <DropdownMenu>
@@ -73,8 +66,6 @@ export function Header() {
           </DropdownMenu>
         </div>
       </header>
-
-      <AddOrderDialog open={addOrderOpen} onOpenChange={setAddOrderOpen} />
     </>
   );
 }
