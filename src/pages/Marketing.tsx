@@ -426,6 +426,7 @@ export default function Marketing() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
+                    <SelectItem value="All Customers">All Customers</SelectItem>
                     <SelectItem value="Platinum">Platinum</SelectItem>
                     <SelectItem value="Gold">Gold</SelectItem>
                     <SelectItem value="Silver">Silver</SelectItem>
