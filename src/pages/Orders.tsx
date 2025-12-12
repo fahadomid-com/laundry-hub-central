@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
-  Plus,
+  Monitor,
   Filter,
   Download,
   MoreHorizontal,
@@ -36,7 +36,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { CreateOrderDialog } from "@/components/orders/CreateOrderDialog";
+
 import { OrderDetailsSheet } from "@/components/orders/OrderDetailsSheet";
 import { EditOrderDialog } from "@/components/orders/EditOrderDialog";
 import { DeleteOrderDialog } from "@/components/orders/DeleteOrderDialog";
@@ -83,7 +83,7 @@ export default function Orders() {
   const [serviceFilter, setServiceFilter] = useState("all");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [createOpen, setCreateOpen] = useState(false);
+  
   const [detailsOrder, setDetailsOrder] = useState<Order | null>(null);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [deleteOrder, setDeleteOrder] = useState<Order | null>(null);
@@ -147,14 +147,8 @@ export default function Orders() {
     toast({ title: "Exporting", description: "Orders data is being exported to CSV" });
   };
 
-  const handleCreateOrder = (newOrder: Omit<Order, "id" | "createdAt">) => {
-    const order: Order = {
-      ...newOrder,
-      id: `ORD-${String(orders.length + 1).padStart(3, "0")}`,
-      createdAt: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-    };
-    setOrders((prev) => [order, ...prev]);
-    toast({ title: "Order created", description: `${order.id} has been created` });
+  const handleOpenPOS = () => {
+    window.open("/pos", "_blank");
   };
 
   const handleUpdateOrder = (updatedOrder: Order) => {
@@ -192,9 +186,9 @@ export default function Orders() {
               Manage and track all laundry orders.
             </p>
           </div>
-          <Button onClick={() => setCreateOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            New Order
+          <Button onClick={handleOpenPOS}>
+            <Monitor className="mr-2 h-4 w-4" />
+            Login POS System
           </Button>
         </div>
 
@@ -449,7 +443,7 @@ export default function Orders() {
         </Card>
       </div>
 
-      <CreateOrderDialog open={createOpen} onOpenChange={setCreateOpen} onSubmit={handleCreateOrder} />
+      
       <OrderDetailsSheet order={detailsOrder} onClose={() => setDetailsOrder(null)} />
       <EditOrderDialog order={editOrder} onClose={() => setEditOrder(null)} onSubmit={handleUpdateOrder} />
       <DeleteOrderDialog order={deleteOrder} onClose={() => setDeleteOrder(null)} onConfirm={handleDeleteOrder} />
