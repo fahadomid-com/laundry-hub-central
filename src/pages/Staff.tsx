@@ -34,12 +34,14 @@ import { useToast } from "@/hooks/use-toast";
 interface Staff {
   id: string;
   name: string;
-  role: "Washer" | "Driver" | "Ironer" | "Manager";
+  role: string;
   status: "Available" | "Busy" | "On Break";
   shift: string;
   currentTask?: string;
   tasksCompleted: number;
 }
+
+const defaultRoles = ["Washer", "Driver", "Ironer", "Manager"];
 
 const initialStaff: Staff[] = [
   { id: "1", name: "Ahmed Hassan", role: "Washer", status: "Busy", shift: "9AM - 5PM", currentTask: "Processing ORD-001", tasksCompleted: 12 },
@@ -50,11 +52,15 @@ const initialStaff: Staff[] = [
   { id: "6", name: "Ali Mahmoud", role: "Manager", status: "Busy", shift: "8AM - 6PM", currentTask: "Supervising floor", tasksCompleted: 0 },
 ];
 
-const roleConfig = {
+const defaultRoleConfig: Record<string, { color: string }> = {
   Washer: { color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" },
   Driver: { color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
   Ironer: { color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
   Manager: { color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
+};
+
+const getRoleColor = (role: string) => {
+  return defaultRoleConfig[role]?.color || "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
 };
 
 const statusConfig = {
@@ -82,10 +88,14 @@ export default function Staff() {
   const [selectedTask, setSelectedTask] = useState("");
   const [newStaff, setNewStaff] = useState({
     name: "",
-    role: "" as Staff["role"] | "",
+    role: "",
     shift: "",
     phone: "",
   });
+  const [customRoles, setCustomRoles] = useState<string[]>([]);
+  const [showCustomRole, setShowCustomRole] = useState(false);
+  const [customRoleInput, setCustomRoleInput] = useState("");
+  const allRoles = [...defaultRoles, ...customRoles];
   const { toast } = useToast();
 
   const shiftOptions = [
@@ -97,6 +107,19 @@ export default function Staff() {
     "2PM - 10PM",
   ];
 
+  const handleAddCustomRole = () => {
+    if (!customRoleInput.trim()) return;
+    if (allRoles.includes(customRoleInput.trim())) {
+      toast({ title: "Role exists", description: "This role already exists", variant: "destructive" });
+      return;
+    }
+    setCustomRoles((prev) => [...prev, customRoleInput.trim()]);
+    setNewStaff({ ...newStaff, role: customRoleInput.trim() });
+    setCustomRoleInput("");
+    setShowCustomRole(false);
+    toast({ title: "Role added", description: `"${customRoleInput.trim()}" has been added as a role` });
+  };
+
   const handleAddStaff = () => {
     if (!newStaff.name || !newStaff.role || !newStaff.shift) {
       toast({ title: "Missing fields", description: "Please fill in all required fields", variant: "destructive" });
@@ -105,7 +128,7 @@ export default function Staff() {
     const staffMember: Staff = {
       id: String(Date.now()),
       name: newStaff.name,
-      role: newStaff.role as Staff["role"],
+      role: newStaff.role,
       status: "Available",
       shift: newStaff.shift,
       tasksCompleted: 0,
@@ -242,7 +265,7 @@ export default function Staff() {
                       </Avatar>
                       <div>
                         <p className="font-medium">{member.name}</p>
-                        <Badge className={roleConfig[member.role].color}>
+                        <Badge className={getRoleColor(member.role)}>
                           {member.role}
                         </Badge>
                       </div>
@@ -366,17 +389,40 @@ export default function Staff() {
             </div>
             <div className="space-y-2">
               <Label>Role *</Label>
-              <Select value={newStaff.role} onValueChange={(value) => setNewStaff({ ...newStaff, role: value as Staff["role"] })}>
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover">
-                  <SelectItem value="Washer">Washer</SelectItem>
-                  <SelectItem value="Driver">Driver</SelectItem>
-                  <SelectItem value="Ironer">Ironer</SelectItem>
-                  <SelectItem value="Manager">Manager</SelectItem>
-                </SelectContent>
-              </Select>
+              {showCustomRole ? (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter custom role"
+                    value={customRoleInput}
+                    onChange={(e) => setCustomRoleInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddCustomRole()}
+                  />
+                  <Button type="button" onClick={handleAddCustomRole}>Add</Button>
+                  <Button type="button" variant="outline" onClick={() => { setShowCustomRole(false); setCustomRoleInput(""); }}>Cancel</Button>
+                </div>
+              ) : (
+                <Select value={newStaff.role} onValueChange={(value) => {
+                  if (value === "__add_custom__") {
+                    setShowCustomRole(true);
+                  } else {
+                    setNewStaff({ ...newStaff, role: value });
+                  }
+                }}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {allRoles.map((role) => (
+                      <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                    <SelectItem value="__add_custom__" className="text-primary">
+                      <span className="flex items-center gap-1">
+                        <Plus className="h-3 w-3" /> Add Custom Role
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
             <div className="space-y-2">
               <Label>Shift *</Label>
