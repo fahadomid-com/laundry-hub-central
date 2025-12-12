@@ -132,10 +132,6 @@ export default function Reports() {
                 <SelectItem value="year">This Year</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" onClick={handleScheduleReport}>
-              <Clock className="mr-2 h-4 w-4" />
-              Schedule
-            </Button>
             <Button onClick={() => handleExportReport("Full")}>
               <Download className="mr-2 h-4 w-4" />
               Export All
