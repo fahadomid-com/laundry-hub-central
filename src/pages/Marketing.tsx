@@ -85,6 +85,7 @@ export default function Marketing() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [promotions, setPromotions] = useState<Promotion[]>(initialPromotions);
   const [createCampaignOpen, setCreateCampaignOpen] = useState(false);
+  const [editCampaign, setEditCampaign] = useState<Campaign | null>(null);
   const [createPromoOpen, setCreatePromoOpen] = useState(false);
   const [editPromo, setEditPromo] = useState<Promotion | null>(null);
   const { toast } = useToast();
@@ -160,6 +161,17 @@ export default function Marketing() {
     };
     setCampaigns((prev) => [...prev, newCamp]);
     toast({ title: "Campaign duplicated", description: `${newCamp.name} created` });
+  };
+
+  const handleEditCampaign = (campaign: Campaign) => {
+    setEditCampaign(campaign);
+  };
+
+  const handleUpdateCampaign = () => {
+    if (!editCampaign) return;
+    setCampaigns((prev) => prev.map((c) => (c.id === editCampaign.id ? editCampaign : c)));
+    setEditCampaign(null);
+    toast({ title: "Campaign updated", description: `${editCampaign.name} has been updated` });
   };
 
   const handleCreatePromo = () => {
@@ -326,6 +338,9 @@ export default function Marketing() {
                             Send
                           </Button>
                         )}
+                        <Button size="sm" variant="outline" onClick={() => handleEditCampaign(campaign)}>
+                          <Edit className="h-3 w-3" />
+                        </Button>
                         <Button size="sm" variant="outline" onClick={() => handleDuplicateCampaign(campaign)}>
                           <Copy className="h-3 w-3" />
                         </Button>
@@ -475,7 +490,70 @@ export default function Marketing() {
         </DialogContent>
       </Dialog>
 
-      {/* Create Promo Dialog */}
+      {/* Edit Campaign Dialog */}
+      <Dialog open={!!editCampaign} onOpenChange={() => setEditCampaign(null)}>
+        <DialogContent className="bg-card">
+          <DialogHeader>
+            <DialogTitle>Edit Campaign</DialogTitle>
+            <DialogDescription>Update campaign details</DialogDescription>
+          </DialogHeader>
+          {editCampaign && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Campaign Name</Label>
+                <Input
+                  value={editCampaign.name}
+                  onChange={(e) => setEditCampaign((p) => p ? { ...p, name: e.target.value } : null)}
+                  placeholder="e.g., Holiday Special Offer"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Type</Label>
+                  <Select
+                    value={editCampaign.type}
+                    onValueChange={(v) => setEditCampaign((p) => p ? { ...p, type: v as "email" | "sms" | "push" } : null)}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="email">Email</SelectItem>
+                      <SelectItem value="sms">SMS</SelectItem>
+                      <SelectItem value="push">Push Notification</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Audience</Label>
+                  <Select
+                    value={editCampaign.audience}
+                    onValueChange={(v) => setEditCampaign((p) => p ? { ...p, audience: v } : null)}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="All Customers">All Customers</SelectItem>
+                      <SelectItem value="Platinum">Platinum</SelectItem>
+                      <SelectItem value="Gold">Gold</SelectItem>
+                      <SelectItem value="Silver">Silver</SelectItem>
+                      <SelectItem value="No Membership">No Membership</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditCampaign(null)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateCampaign}>Save Changes</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={createPromoOpen} onOpenChange={setCreatePromoOpen}>
         <DialogContent className="bg-card">
           <DialogHeader>
