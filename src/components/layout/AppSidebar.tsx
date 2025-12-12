@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  Settings2,
   ShoppingCart,
   Package,
   Users,
@@ -26,7 +25,6 @@ import {
 
 const menuItems = [
   { title: "Dashboard", icon: LayoutDashboard, url: "/" },
-  { title: "Operations", icon: Settings2, url: "/operations" },
   { title: "Orders", icon: ShoppingCart, url: "/orders" },
   { title: "Catalog", icon: Package, url: "/catalog" },
   { title: "Customers", icon: Users, url: "/customers" },
