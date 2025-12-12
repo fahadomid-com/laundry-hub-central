@@ -86,13 +86,7 @@ export function ExpenseSheet({ open, onOpenChange }: ExpenseSheetProps) {
             <p className="text-2xl font-bold text-destructive">KD{totalExpenses.toFixed(2)}</p>
           </div>
 
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">Recent Expenses</h3>
-            <Button size="sm" onClick={() => setShowAddForm(!showAddForm)}>
-              <Plus className="mr-1 h-4 w-4" />
-              Add Expense
-            </Button>
-          </div>
+          <h3 className="font-semibold">Recent Expenses</h3>
 
           {showAddForm && (
             <form onSubmit={handleAddExpense} className="rounded-lg border border-border bg-background p-4 space-y-3">
