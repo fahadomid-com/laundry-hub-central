@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Operations from "./pages/Operations";
+
 import Orders from "./pages/Orders";
 import POS from "./pages/POS";
 import Catalog from "./pages/Catalog";
@@ -49,14 +49,6 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Index />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/operations"
-        element={
-          <ProtectedRoute>
-            <Operations />
           </ProtectedRoute>
         }
       />
