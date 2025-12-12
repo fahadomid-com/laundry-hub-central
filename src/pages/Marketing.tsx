@@ -225,7 +225,7 @@ export default function Marketing() {
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <Megaphone className="h-8 w-8 text-primary" />
@@ -241,24 +241,6 @@ export default function Marketing() {
               <div>
                 <p className="text-2xl font-bold">{stats.activeCampaigns}</p>
                 <p className="text-sm text-muted-foreground">Active</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4 bg-blue-50 dark:bg-blue-950/20">
-            <div className="flex items-center gap-3">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div>
-                <p className="text-2xl font-bold">{stats.totalSent.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground">Messages Sent</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4 bg-purple-50 dark:bg-purple-950/20">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="h-8 w-8 text-purple-600" />
-              <div>
-                <p className="text-2xl font-bold">{stats.avgOpenRate}%</p>
-                <p className="text-sm text-muted-foreground">Avg Open Rate</p>
               </div>
             </div>
           </Card>
