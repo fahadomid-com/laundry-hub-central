@@ -64,13 +64,6 @@ const customerInsights = [
   { metric: "Repeat Order Rate", value: "65%", status: "good" },
 ];
 
-const operationalMetrics = [
-  { metric: "Avg Processing Time", value: "18 hrs", target: "24 hrs", status: "excellent" },
-  { metric: "On-Time Delivery Rate", value: "94%", target: "95%", status: "warning" },
-  { metric: "Order Accuracy", value: "99.2%", target: "99%", status: "excellent" },
-  { metric: "Driver Utilization", value: "82%", target: "85%", status: "warning" },
-  { metric: "Machine Downtime", value: "2.1%", target: "3%", status: "excellent" },
-];
 
 export default function Reports() {
   const [dateRange, setDateRange] = useState("month");
@@ -180,7 +173,6 @@ export default function Reports() {
           <TabsList>
             <TabsTrigger value="services">Service Analytics</TabsTrigger>
             <TabsTrigger value="customers">Customer Insights</TabsTrigger>
-            <TabsTrigger value="operations">Operations</TabsTrigger>
             <TabsTrigger value="ai-config">
               <Settings className="mr-2 h-4 w-4" />
               AI Configuration
@@ -318,57 +310,6 @@ export default function Reports() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="operations" className="space-y-4">
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Card className="p-4">
-                <h3 className="font-semibold mb-4">Peak Hours</h3>
-                <div className="space-y-2">
-                  {[
-                    { time: "9:00 AM - 12:00 PM", orders: 45 },
-                    { time: "12:00 PM - 3:00 PM", orders: 32 },
-                    { time: "3:00 PM - 6:00 PM", orders: 58 },
-                    { time: "6:00 PM - 9:00 PM", orders: 41 },
-                  ].map((slot) => (
-                    <div key={slot.time} className="flex items-center justify-between">
-                      <span className="text-sm">{slot.time}</span>
-                      <div className="flex items-center gap-2">
-                        <div className="h-2 w-24 rounded-full bg-muted">
-                          <div
-                            className="h-2 rounded-full bg-primary"
-                            style={{ width: `${(slot.orders / 58) * 100}%` }}
-                          />
-                        </div>
-                        <span className="w-8 text-right text-sm font-medium">{slot.orders}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
-              <Card className="p-4">
-                <h3 className="font-semibold mb-4">Driver Performance</h3>
-                <div className="space-y-3">
-                  {[
-                    { name: "Mohammed Ali", deliveries: 68, rating: 4.9 },
-                    { name: "Ahmed Hassan", deliveries: 52, rating: 4.8 },
-                    { name: "Yusuf Ibrahim", deliveries: 45, rating: 4.7 },
-                  ].map((driver) => (
-                    <div key={driver.name} className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">{driver.name}</p>
-                        <p className="text-sm text-muted-foreground">{driver.deliveries} deliveries</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                        <span className="font-medium">{driver.rating}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </div>
-          </TabsContent>
 
           <TabsContent value="ai-config" className="space-y-6">
             <div className="grid gap-6 lg:grid-cols-2">
