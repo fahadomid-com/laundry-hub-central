@@ -15,6 +15,7 @@ import Drivers from "./pages/Drivers";
 import Finance from "./pages/Finance";
 import Reports from "./pages/Reports";
 import AISupport from "./pages/AISupport";
+import Expenses from "./pages/Expenses";
 import Marketing from "./pages/Marketing";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -105,6 +106,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Finance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/expenses"
+        element={
+          <ProtectedRoute>
+            <Expenses />
           </ProtectedRoute>
         }
       />
