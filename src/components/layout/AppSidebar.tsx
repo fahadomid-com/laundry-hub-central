@@ -9,7 +9,6 @@ import {
   BarChart3,
   Bot,
   Megaphone,
-  Puzzle,
   Settings,
   WashingMachine,
 } from "lucide-react";
@@ -36,7 +35,6 @@ const menuItems = [
   { title: "Smart Reports", icon: BarChart3, url: "/reports" },
   { title: "AI Support & Bot", icon: Bot, url: "/ai-support" },
   { title: "Marketing", icon: Megaphone, url: "/marketing" },
-  { title: "Integrations", icon: Puzzle, url: "/integrations" },
   { title: "Settings", icon: Settings, url: "/settings" },
 ];
 
