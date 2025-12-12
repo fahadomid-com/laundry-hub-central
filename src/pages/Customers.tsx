@@ -49,6 +49,7 @@ import {
   Star,
   Gift,
   MessageSquare,
+  Download,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -148,6 +149,36 @@ export default function Customers() {
     toast({ title: "Points redeemed", description: `${customer.loyaltyPoints} points redeemed for ${customer.name}` });
   };
 
+  const handleExportCustomers = () => {
+    const headers = ["Name", "Phone", "Email", "Address", "Tier", "Total Orders", "Total Spent", "Loyalty Points", "Join Date", "Last Order", "Notes"];
+    const csvContent = [
+      headers.join(","),
+      ...customers.map((c) =>
+        [
+          `"${c.name}"`,
+          `"${c.phone}"`,
+          `"${c.email}"`,
+          `"${c.address}"`,
+          c.tier,
+          c.totalOrders,
+          c.totalSpent.toFixed(2),
+          c.loyaltyPoints,
+          c.joinDate,
+          c.lastOrder,
+          `"${c.notes}"`,
+        ].join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `customers_export_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    toast({ title: "Export complete", description: `${customers.length} customers exported to CSV` });
+  };
+
   const stats = {
     total: customers.length,
     platinum: customers.filter((c) => c.tier === "Platinum").length,
@@ -165,10 +196,16 @@ export default function Customers() {
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Customers</h1>
             <p className="mt-1 text-muted-foreground">Manage customer profiles and loyalty</p>
           </div>
-          <Button onClick={() => setAddOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Customer
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleExportCustomers}>
+              <Download className="mr-2 h-4 w-4" />
+              Export
+            </Button>
+            <Button onClick={() => setAddOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Customer
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}
