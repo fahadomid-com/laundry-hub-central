@@ -40,7 +40,7 @@ interface User {
   name: string;
   email: string;
   mobile: string;
-  role: "Admin" | "Employee";
+  role: string;
   branch: string;
   status: "Active" | "Inactive";
   lastLogin: string;
@@ -106,15 +106,19 @@ export default function SettingsPage() {
   const [selectedRole, setSelectedRole] = useState<"Admin" | "Employee">("Admin");
   const [permissions, setPermissions] = useState(initialPermissions);
   const [addUserOpen, setAddUserOpen] = useState(false);
+  const [roles, setRoles] = useState(["Admin", "Employee"]);
+  const [branches, setBranches] = useState(["All Branches", "Salmiya", "City", "Hawally", "Farwaniya"]);
+  const [showCustomRole, setShowCustomRole] = useState(false);
+  const [customRole, setCustomRole] = useState("");
+  const [showCustomBranch, setShowCustomBranch] = useState(false);
+  const [customBranch, setCustomBranch] = useState("");
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
     mobile: "",
-    role: "Employee" as "Admin" | "Employee",
+    role: "Employee",
     branch: "Salmiya",
   });
-
-  const branches = ["All Branches", "Salmiya", "City", "Hawally", "Farwaniya"];
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -436,36 +440,103 @@ export default function SettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Role</Label>
-                <Select
-                  value={newUser.role}
-                  onValueChange={(v) => setNewUser((p) => ({ ...p, role: v as "Admin" | "Employee" }))}
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Employee">Employee</SelectItem>
-                  </SelectContent>
-                </Select>
+                {showCustomRole ? (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter custom role"
+                      value={customRole}
+                      onChange={(e) => setCustomRole(e.target.value)}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        if (customRole.trim()) {
+                          setRoles((prev) => [...prev, customRole.trim()]);
+                          setNewUser((p) => ({ ...p, role: customRole.trim() }));
+                          setShowCustomRole(false);
+                          setCustomRole("");
+                        }
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                ) : (
+                  <Select
+                    value={newUser.role}
+                    onValueChange={(v) => {
+                      if (v === "__add_role__") {
+                        setShowCustomRole(true);
+                      } else {
+                        setNewUser((p) => ({ ...p, role: v }));
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {roles.map((role) => (
+                        <SelectItem key={role} value={role}>
+                          {role}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="__add_role__" className="text-primary font-medium">
+                        + Add Extra Role
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Branch</Label>
-                <Select
-                  value={newUser.branch}
-                  onValueChange={(v) => setNewUser((p) => ({ ...p, branch: v }))}
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    {branches.map((branch) => (
-                      <SelectItem key={branch} value={branch}>
-                        {branch}
+                {showCustomBranch ? (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter branch name"
+                      value={customBranch}
+                      onChange={(e) => setCustomBranch(e.target.value)}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        if (customBranch.trim()) {
+                          setBranches((prev) => [...prev, customBranch.trim()]);
+                          setNewUser((p) => ({ ...p, branch: customBranch.trim() }));
+                          setShowCustomBranch(false);
+                          setCustomBranch("");
+                        }
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                ) : (
+                  <Select
+                    value={newUser.branch}
+                    onValueChange={(v) => {
+                      if (v === "__add_branch__") {
+                        setShowCustomBranch(true);
+                      } else {
+                        setNewUser((p) => ({ ...p, branch: v }));
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {branches.map((branch) => (
+                        <SelectItem key={branch} value={branch}>
+                          {branch}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="__add_branch__" className="text-primary font-medium">
+                        + Add Branch
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
           </div>
