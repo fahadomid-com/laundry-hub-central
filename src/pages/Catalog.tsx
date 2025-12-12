@@ -82,6 +82,8 @@ export default function Catalog() {
   const [addServiceOpen, setAddServiceOpen] = useState(false);
   const [addOfferOpen, setAddOfferOpen] = useState(false);
   const [editService, setEditService] = useState<Service | null>(null);
+  const [showCustomCategory, setShowCustomCategory] = useState(false);
+  const [customCategory, setCustomCategory] = useState("");
   const { toast } = useToast();
 
   const [newService, setNewService] = useState({
@@ -292,21 +294,54 @@ export default function Catalog() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Category</Label>
-                <Select
-                  value={newService.category}
-                  onValueChange={(v) => setNewService((p) => ({ ...p, category: v }))}
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="Wash & Fold">Wash & Fold</SelectItem>
-                    <SelectItem value="Dry Cleaning">Dry Cleaning</SelectItem>
-                    <SelectItem value="Alterations">Alterations</SelectItem>
-                    <SelectItem value="Express">Express</SelectItem>
-                    <SelectItem value="Ironing">Ironing</SelectItem>
-                  </SelectContent>
-                </Select>
+                {showCustomCategory ? (
+                  <div className="flex gap-2">
+                    <Input
+                      value={customCategory}
+                      onChange={(e) => setCustomCategory(e.target.value)}
+                      placeholder="Enter new category"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (customCategory.trim()) {
+                          setNewService((p) => ({ ...p, category: customCategory.trim() }));
+                        }
+                        setShowCustomCategory(false);
+                        setCustomCategory("");
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                ) : (
+                  <Select
+                    value={newService.category}
+                    onValueChange={(v) => {
+                      if (v === "__add_new__") {
+                        setShowCustomCategory(true);
+                      } else {
+                        setNewService((p) => ({ ...p, category: v }));
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="Wash & Fold">Wash & Fold</SelectItem>
+                      <SelectItem value="Dry Cleaning">Dry Cleaning</SelectItem>
+                      <SelectItem value="Alterations">Alterations</SelectItem>
+                      <SelectItem value="Express">Express</SelectItem>
+                      <SelectItem value="Ironing">Ironing</SelectItem>
+                      <SelectItem value="__add_new__" className="text-primary font-medium">
+                        + Add Extra Category
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Price (KD)</Label>
