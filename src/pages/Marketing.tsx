@@ -426,10 +426,10 @@ export default function Marketing() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    <SelectItem value="All Customers">All Customers</SelectItem>
-                    <SelectItem value="New Customers">New Customers</SelectItem>
-                    <SelectItem value="Gold & Platinum">Gold & Platinum</SelectItem>
-                    <SelectItem value="Inactive Customers">Inactive Customers</SelectItem>
+                    <SelectItem value="Platinum">Platinum</SelectItem>
+                    <SelectItem value="Gold">Gold</SelectItem>
+                    <SelectItem value="Silver">Silver</SelectItem>
+                    <SelectItem value="No Membership">No Membership</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
