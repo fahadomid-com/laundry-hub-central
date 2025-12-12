@@ -61,11 +61,7 @@ const topServices = [
 ];
 
 const customerInsights = [
-  { metric: "Customer Retention Rate", value: "78%", status: "good" },
-  { metric: "Avg Customer Lifetime Value", value: "KD 245", status: "good" },
   { metric: "Repeat Order Rate", value: "65%", status: "good" },
-  { metric: "Customer Satisfaction", value: "4.7/5", status: "excellent" },
-  { metric: "Churn Rate", value: "8%", status: "warning" },
 ];
 
 const operationalMetrics = [
