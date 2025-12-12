@@ -57,6 +57,7 @@ import { useToast } from "@/hooks/use-toast";
 interface Driver {
   id: string;
   name: string;
+  email: string;
   phone: string;
   vehicle: string;
   plateNumber: string;
@@ -70,12 +71,12 @@ interface Driver {
 }
 
 const initialDrivers: Driver[] = [
-  { id: "1", name: "Ahmed Hassan", phone: "+965 1111 2222", vehicle: "Van", plateNumber: "KWT 1234", status: "On Route", currentLocation: "Salmiya", todayDeliveries: 8, totalDeliveries: 450, rating: 4.8, joinDate: "Jan 10, 2024", activeOrder: "ORD-015" },
-  { id: "2", name: "Mohammed Ali", phone: "+965 2222 3333", vehicle: "Motorcycle", plateNumber: "KWT 5678", status: "Available", currentLocation: "Warehouse", todayDeliveries: 12, totalDeliveries: 680, rating: 4.9, joinDate: "Mar 5, 2023" },
-  { id: "3", name: "Khalid Omar", phone: "+965 3333 4444", vehicle: "Van", plateNumber: "KWT 9012", status: "On Break", currentLocation: "Hawally", todayDeliveries: 5, totalDeliveries: 320, rating: 4.6, joinDate: "Jun 15, 2024" },
-  { id: "4", name: "Yusuf Ibrahim", phone: "+965 4444 5555", vehicle: "Car", plateNumber: "KWT 3456", status: "On Route", currentLocation: "Farwaniya", todayDeliveries: 10, totalDeliveries: 520, rating: 4.7, joinDate: "Feb 20, 2024", activeOrder: "ORD-018" },
-  { id: "5", name: "Omar Saleh", phone: "+965 5555 6666", vehicle: "Motorcycle", plateNumber: "KWT 7890", status: "Off Duty", currentLocation: "-", todayDeliveries: 0, totalDeliveries: 280, rating: 4.5, joinDate: "Aug 1, 2024" },
-  { id: "6", name: "Hassan Nasser", phone: "+965 6666 7777", vehicle: "Van", plateNumber: "KWT 2345", status: "Available", currentLocation: "Warehouse", todayDeliveries: 9, totalDeliveries: 390, rating: 4.8, joinDate: "Apr 12, 2024" },
+  { id: "1", name: "Ahmed Hassan", email: "ahmed.hassan@email.com", phone: "+965 1111 2222", vehicle: "Van", plateNumber: "KWT 1234", status: "On Route", currentLocation: "Salmiya", todayDeliveries: 8, totalDeliveries: 450, rating: 4.8, joinDate: "Jan 10, 2024", activeOrder: "ORD-015" },
+  { id: "2", name: "Mohammed Ali", email: "mohammed.ali@email.com", phone: "+965 2222 3333", vehicle: "Motorcycle", plateNumber: "KWT 5678", status: "Available", currentLocation: "Warehouse", todayDeliveries: 12, totalDeliveries: 680, rating: 4.9, joinDate: "Mar 5, 2023" },
+  { id: "3", name: "Khalid Omar", email: "khalid.omar@email.com", phone: "+965 3333 4444", vehicle: "Van", plateNumber: "KWT 9012", status: "On Break", currentLocation: "Hawally", todayDeliveries: 5, totalDeliveries: 320, rating: 4.6, joinDate: "Jun 15, 2024" },
+  { id: "4", name: "Yusuf Ibrahim", email: "yusuf.ibrahim@email.com", phone: "+965 4444 5555", vehicle: "Car", plateNumber: "KWT 3456", status: "On Route", currentLocation: "Farwaniya", todayDeliveries: 10, totalDeliveries: 520, rating: 4.7, joinDate: "Feb 20, 2024", activeOrder: "ORD-018" },
+  { id: "5", name: "Omar Saleh", email: "omar.saleh@email.com", phone: "+965 5555 6666", vehicle: "Motorcycle", plateNumber: "KWT 7890", status: "Off Duty", currentLocation: "-", todayDeliveries: 0, totalDeliveries: 280, rating: 4.5, joinDate: "Aug 1, 2024" },
+  { id: "6", name: "Hassan Nasser", email: "hassan.nasser@email.com", phone: "+965 6666 7777", vehicle: "Van", plateNumber: "KWT 2345", status: "Available", currentLocation: "Warehouse", todayDeliveries: 9, totalDeliveries: 390, rating: 4.8, joinDate: "Apr 12, 2024" },
 ];
 
 const statusConfig = {
@@ -96,6 +97,7 @@ export default function Drivers() {
 
   const [newDriver, setNewDriver] = useState({
     name: "",
+    email: "",
     phone: "",
     vehicle: "Van",
     plateNumber: "",
@@ -123,7 +125,7 @@ export default function Drivers() {
       joinDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
     };
     setDrivers((prev) => [...prev, driver]);
-    setNewDriver({ name: "", phone: "", vehicle: "Van", plateNumber: "" });
+    setNewDriver({ name: "", email: "", phone: "", vehicle: "Van", plateNumber: "" });
     setAddOpen(false);
     toast({ title: "Driver added", description: `${driver.name} has been added` });
   };
@@ -459,6 +461,15 @@ export default function Drivers() {
                 placeholder="+965 XXXX XXXX"
               />
             </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={newDriver.email}
+                onChange={(e) => setNewDriver((p) => ({ ...p, email: e.target.value }))}
+                placeholder="driver@email.com"
+              />
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Vehicle Type</Label>
@@ -516,6 +527,14 @@ export default function Drivers() {
                 <Input
                   value={editDriver.phone}
                   onChange={(e) => setEditDriver((p) => p ? { ...p, phone: e.target.value } : null)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={editDriver.email}
+                  onChange={(e) => setEditDriver((p) => p ? { ...p, email: e.target.value } : null)}
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
