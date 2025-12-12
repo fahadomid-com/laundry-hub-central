@@ -87,6 +87,15 @@ export default function Catalog() {
   const [showCustomType, setShowCustomType] = useState(false);
   const [customType, setCustomType] = useState("");
   const [serviceType, setServiceType] = useState("Normal");
+  // Edit dialog states
+  const [editShowCustomCategory, setEditShowCustomCategory] = useState(false);
+  const [editCustomCategory, setEditCustomCategory] = useState("");
+  const [editShowCustomType, setEditShowCustomType] = useState(false);
+  const [editCustomType, setEditCustomType] = useState("");
+  const [editServiceType, setEditServiceType] = useState("Normal");
+  const [editShowCustomServiceOption, setEditShowCustomServiceOption] = useState(false);
+  const [editCustomServiceOption, setEditCustomServiceOption] = useState("");
+  const [editServiceOption, setEditServiceOption] = useState("Wash & Iron");
   const { toast } = useToast();
 
   const [newService, setNewService] = useState({
@@ -467,7 +476,12 @@ export default function Catalog() {
       </Dialog>
 
       {/* Edit Service Dialog */}
-      <Dialog open={!!editService} onOpenChange={() => setEditService(null)}>
+      <Dialog open={!!editService} onOpenChange={() => {
+        setEditService(null);
+        setEditShowCustomCategory(false);
+        setEditShowCustomType(false);
+        setEditShowCustomServiceOption(false);
+      }}>
         <DialogContent className="bg-card">
           <DialogHeader>
             <DialogTitle>Edit Service</DialogTitle>
@@ -476,37 +490,161 @@ export default function Catalog() {
           {editService && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Service Name</Label>
-                <Input
-                  value={editService.name}
-                  onChange={(e) => setEditService((p) => p ? { ...p, name: e.target.value } : null)}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Category</Label>
+                <Label>Service Type</Label>
+                {editShowCustomType ? (
+                  <div className="flex gap-2">
+                    <Input
+                      value={editCustomType}
+                      onChange={(e) => setEditCustomType(e.target.value)}
+                      placeholder="Enter new type"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (editCustomType.trim()) {
+                          setEditServiceType(editCustomType.trim());
+                        }
+                        setEditShowCustomType(false);
+                        setEditCustomType("");
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                ) : (
                   <Select
-                    value={editService.category}
-                    onValueChange={(v) => setEditService((p) => p ? { ...p, category: v } : null)}
+                    value={editServiceType}
+                    onValueChange={(v) => {
+                      if (v === "__add_type__") {
+                        setEditShowCustomType(true);
+                      } else {
+                        setEditServiceType(v);
+                      }
+                    }}
                   >
                     <SelectTrigger className="bg-background">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-popover">
-                      <SelectItem value="Bedding/Bath">Bedding/Bath</SelectItem>
-                      <SelectItem value="Accessories">Accessories</SelectItem>
-                      <SelectItem value="Home">Home</SelectItem>
-                      <SelectItem value="Undergarment">Undergarment</SelectItem>
-                      <SelectItem value="Suits">Suits</SelectItem>
-                      <SelectItem value="Dresses">Dresses</SelectItem>
-                      <SelectItem value="Children">Children</SelectItem>
-                      <SelectItem value="Traditional">Traditional</SelectItem>
-                      <SelectItem value="Tops">Tops</SelectItem>
-                      <SelectItem value="Bottoms">Bottoms</SelectItem>
-                      <SelectItem value="Outdoors">Outdoors</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
+                      <SelectItem value="Normal">Normal</SelectItem>
+                      <SelectItem value="Express">Express</SelectItem>
+                      <SelectItem value="Extras">Extras</SelectItem>
+                      <SelectItem value="__add_type__" className="text-primary font-medium">
+                        + Add Extra Type
+                      </SelectItem>
                     </SelectContent>
                   </Select>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Service</Label>
+                  {editShowCustomCategory ? (
+                    <div className="flex gap-2">
+                      <Input
+                        value={editCustomCategory}
+                        onChange={(e) => setEditCustomCategory(e.target.value)}
+                        placeholder="Enter new category"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (editCustomCategory.trim()) {
+                            setEditService((p) => p ? { ...p, category: editCustomCategory.trim() } : null);
+                          }
+                          setEditShowCustomCategory(false);
+                          setEditCustomCategory("");
+                        }}
+                      >
+                        Done
+                      </Button>
+                    </div>
+                  ) : (
+                    <Select
+                      value={editService.category}
+                      onValueChange={(v) => {
+                        if (v === "__add_new__") {
+                          setEditShowCustomCategory(true);
+                        } else {
+                          setEditService((p) => p ? { ...p, category: v } : null);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="bg-background">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        <SelectItem value="Bedding/Bath">Bedding/Bath</SelectItem>
+                        <SelectItem value="Accessories">Accessories</SelectItem>
+                        <SelectItem value="Home">Home</SelectItem>
+                        <SelectItem value="Undergarment">Undergarment</SelectItem>
+                        <SelectItem value="Suits">Suits</SelectItem>
+                        <SelectItem value="Dresses">Dresses</SelectItem>
+                        <SelectItem value="Children">Children</SelectItem>
+                        <SelectItem value="Traditional">Traditional</SelectItem>
+                        <SelectItem value="Tops">Tops</SelectItem>
+                        <SelectItem value="Bottoms">Bottoms</SelectItem>
+                        <SelectItem value="Outdoors">Outdoors</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                        <SelectItem value="__add_new__" className="text-primary font-medium">
+                          + Add Extra Service
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label>Service Options</Label>
+                  {editShowCustomServiceOption ? (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter custom option"
+                        value={editCustomServiceOption}
+                        onChange={(e) => setEditCustomServiceOption(e.target.value)}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          if (editCustomServiceOption.trim()) {
+                            setEditServiceOption(editCustomServiceOption.trim());
+                            setEditShowCustomServiceOption(false);
+                            setEditCustomServiceOption("");
+                          }
+                        }}
+                      >
+                        Done
+                      </Button>
+                    </div>
+                  ) : (
+                    <Select
+                      value={editServiceOption}
+                      onValueChange={(v) => {
+                        if (v === "__add_extra__") {
+                          setEditShowCustomServiceOption(true);
+                        } else {
+                          setEditServiceOption(v);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="bg-background">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        <SelectItem value="Wash & Iron">Wash & Iron</SelectItem>
+                        <SelectItem value="Iron">Iron</SelectItem>
+                        <SelectItem value="Dry Clean">Dry Clean</SelectItem>
+                        <SelectItem value="Press">Press</SelectItem>
+                        <SelectItem value="Fold">Fold</SelectItem>
+                        <SelectItem value="__add_extra__" className="text-primary font-medium">
+                          + Add Extra Option
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label>Price (KD)</Label>
@@ -517,13 +655,6 @@ export default function Catalog() {
                     onChange={(e) => setEditService((p) => p ? { ...p, price: parseFloat(e.target.value) || 0 } : null)}
                   />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label>Description</Label>
-                <Input
-                  value={editService.description}
-                  onChange={(e) => setEditService((p) => p ? { ...p, description: e.target.value } : null)}
-                />
               </div>
             </div>
           )}
