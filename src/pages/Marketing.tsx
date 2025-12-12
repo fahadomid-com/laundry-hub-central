@@ -104,6 +104,7 @@ export default function Marketing() {
     usageLimit: 100,
     validFrom: "",
     validUntil: "",
+    audience: "All Customers",
   });
 
   const stats = {
@@ -169,7 +170,7 @@ export default function Marketing() {
       active: true,
     };
     setPromotions((prev) => [...prev, promo]);
-    setNewPromo({ name: "", code: "", discount: 0, type: "percentage", usageLimit: 100, validFrom: "", validUntil: "" });
+    setNewPromo({ name: "", code: "", discount: 0, type: "percentage", usageLimit: 100, validFrom: "", validUntil: "", audience: "All Customers" });
     setCreatePromoOpen(false);
     toast({ title: "Promo code created", description: `${promo.code} is now active` });
   };
@@ -511,6 +512,24 @@ export default function Marketing() {
                   onChange={(e) => setNewPromo((p) => ({ ...p, discount: parseFloat(e.target.value) || 0 }))}
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Audience</Label>
+              <Select
+                value={newPromo.audience}
+                onValueChange={(v) => setNewPromo((p) => ({ ...p, audience: v }))}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="All Customers">All Customers</SelectItem>
+                  <SelectItem value="Platinum">Platinum</SelectItem>
+                  <SelectItem value="Gold">Gold</SelectItem>
+                  <SelectItem value="Silver">Silver</SelectItem>
+                  <SelectItem value="No Membership">No Membership</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
