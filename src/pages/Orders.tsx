@@ -247,11 +247,18 @@ export default function Orders() {
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
                   <SelectItem value="all">All Services</SelectItem>
-                  <SelectItem value="Dry Cleaning">Dry Cleaning</SelectItem>
-                  <SelectItem value="Wash & Fold">Wash & Fold</SelectItem>
-                  <SelectItem value="Alterations">Alterations</SelectItem>
-                  <SelectItem value="Express Wash">Express Wash</SelectItem>
-                  <SelectItem value="Ironing">Ironing</SelectItem>
+                  <SelectItem value="Bedding/Bath">Bedding/Bath</SelectItem>
+                  <SelectItem value="Accessories">Accessories</SelectItem>
+                  <SelectItem value="Home">Home</SelectItem>
+                  <SelectItem value="Undergarment">Undergarment</SelectItem>
+                  <SelectItem value="Suits">Suits</SelectItem>
+                  <SelectItem value="Dresses">Dresses</SelectItem>
+                  <SelectItem value="Children">Children</SelectItem>
+                  <SelectItem value="Traditional">Traditional</SelectItem>
+                  <SelectItem value="Tops">Tops</SelectItem>
+                  <SelectItem value="Bottoms">Bottoms</SelectItem>
+                  <SelectItem value="Outdoors">Outdoors</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
