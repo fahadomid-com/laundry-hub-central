@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 
 interface Order {
@@ -26,9 +27,9 @@ export function RecentOrdersTable() {
     <div className="rounded-lg border border-border bg-card">
       <div className="flex items-center justify-between p-6 pb-4">
         <h3 className="text-lg font-semibold text-foreground">Recent Orders</h3>
-        <button className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+        <Link to="/orders" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
           View All
-        </button>
+        </Link>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
