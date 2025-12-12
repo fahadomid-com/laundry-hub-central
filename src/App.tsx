@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-
+import Staff from "./pages/Staff";
 import Orders from "./pages/Orders";
 import POS from "./pages/POS";
 import Catalog from "./pages/Catalog";
@@ -89,6 +89,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Drivers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/staff"
+        element={
+          <ProtectedRoute>
+            <Staff />
           </ProtectedRoute>
         }
       />
