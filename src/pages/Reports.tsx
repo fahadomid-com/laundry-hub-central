@@ -294,7 +294,7 @@ export default function Reports() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 {[
-                  { label: "Avg Order Value", value: "KD 36.40", change: 4.5, trend: "up" },
+                  { label: "Avg Orders per Day", value: "KD 36.40", change: 4.5, trend: "up" },
                   { label: "Avg Monthly Spend", value: "KD 145.60", change: 7.2, trend: "up" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-lg border border-border p-4">
