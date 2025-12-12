@@ -86,6 +86,7 @@ export default function Marketing() {
   const [promotions, setPromotions] = useState<Promotion[]>(initialPromotions);
   const [createCampaignOpen, setCreateCampaignOpen] = useState(false);
   const [createPromoOpen, setCreatePromoOpen] = useState(false);
+  const [editPromo, setEditPromo] = useState<Promotion | null>(null);
   const { toast } = useToast();
 
   const [newCampaign, setNewCampaign] = useState({
@@ -190,6 +191,17 @@ export default function Marketing() {
     const promo = promotions.find((p) => p.id === id);
     setPromotions((prev) => prev.filter((p) => p.id !== id));
     toast({ title: "Promo deleted", description: `${promo?.code} has been removed` });
+  };
+
+  const handleEditPromo = (promo: Promotion) => {
+    setEditPromo(promo);
+  };
+
+  const handleUpdatePromo = () => {
+    if (!editPromo) return;
+    setPromotions((prev) => prev.map((p) => (p.id === editPromo.id ? editPromo : p)));
+    setEditPromo(null);
+    toast({ title: "Promo updated", description: `${editPromo.code} has been updated` });
   };
 
   const typeIcons = {
@@ -368,7 +380,7 @@ export default function Marketing() {
                     </div>
 
                     <div className="mt-4 flex gap-2">
-                      <Button size="sm" variant="outline" className="flex-1">
+                      <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEditPromo(promo)}>
                         <Edit className="mr-1 h-3 w-3" />
                         Edit
                       </Button>
@@ -555,6 +567,104 @@ export default function Marketing() {
               Cancel
             </Button>
             <Button onClick={handleCreatePromo}>Create Promo</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Promo Dialog */}
+      <Dialog open={!!editPromo} onOpenChange={() => setEditPromo(null)}>
+        <DialogContent className="bg-card">
+          <DialogHeader>
+            <DialogTitle>Edit Promo Code</DialogTitle>
+            <DialogDescription>Update promotional discount details</DialogDescription>
+          </DialogHeader>
+          {editPromo && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Promo Name</Label>
+                <Input
+                  value={editPromo.name}
+                  onChange={(e) => setEditPromo((p) => p ? { ...p, name: e.target.value } : null)}
+                  placeholder="e.g., New Customer Discount"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Code</Label>
+                <Input
+                  value={editPromo.code}
+                  onChange={(e) => setEditPromo((p) => p ? { ...p, code: e.target.value.toUpperCase() } : null)}
+                  placeholder="e.g., SAVE20"
+                  className="font-mono"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Discount Type</Label>
+                  <Select
+                    value={editPromo.type}
+                    onValueChange={(v) => setEditPromo((p) => p ? { ...p, type: v as "percentage" | "fixed" } : null)}
+                  >
+                    <SelectTrigger className="bg-background">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="percentage">Percentage (%)</SelectItem>
+                      <SelectItem value="fixed">Fixed Amount (KD)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Discount Value</Label>
+                  <Input
+                    type="number"
+                    value={editPromo.discount}
+                    onChange={(e) => setEditPromo((p) => p ? { ...p, discount: parseFloat(e.target.value) || 0 } : null)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Audience</Label>
+                <Select
+                  value={editPromo.active ? "All Customers" : "All Customers"}
+                  onValueChange={() => {}}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="All Customers" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="All Customers">All Customers</SelectItem>
+                    <SelectItem value="Platinum">Platinum</SelectItem>
+                    <SelectItem value="Gold">Gold</SelectItem>
+                    <SelectItem value="Silver">Silver</SelectItem>
+                    <SelectItem value="No Membership">No Membership</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Usage Limit</Label>
+                  <Input
+                    type="number"
+                    value={editPromo.usageLimit}
+                    onChange={(e) => setEditPromo((p) => p ? { ...p, usageLimit: parseInt(e.target.value) || 100 } : null)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Valid Until</Label>
+                  <Input
+                    value={editPromo.validUntil}
+                    onChange={(e) => setEditPromo((p) => p ? { ...p, validUntil: e.target.value } : null)}
+                    placeholder="Dec 31, 2025"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditPromo(null)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdatePromo}>Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
