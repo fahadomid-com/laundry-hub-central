@@ -242,11 +242,10 @@ export default function Reports() {
                   Export
                 </Button>
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2">
                 {[
                   { label: "Daily Average", value: "KD 415", change: 8.3, trend: "up" },
                   { label: "Weekly Total", value: "KD 2,905", change: 12.1, trend: "up" },
-                  { label: "Monthly Target", value: "85%", change: 5.2, trend: "up" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-lg border border-border p-4">
                     <p className="text-sm text-muted-foreground">{item.label}</p>
