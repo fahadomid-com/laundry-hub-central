@@ -1,4 +1,4 @@
-import { CreditCard, Package, Users, CheckCircle } from "lucide-react";
+import { CreditCard, Package, Users } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { RecentOrdersTable } from "@/components/dashboard/RecentOrdersTable";
 import { QuickActions } from "@/components/dashboard/QuickActions";
@@ -30,15 +30,6 @@ const stats = [
     icon: Users,
     iconBgColor: "bg-info/10",
     iconColor: "text-info",
-  },
-  {
-    title: "Completion Rate",
-    value: "94.2%",
-    change: "-2.1%",
-    changeType: "negative" as const,
-    icon: CheckCircle,
-    iconBgColor: "bg-warning/10",
-    iconColor: "text-warning",
   },
 ];
 
