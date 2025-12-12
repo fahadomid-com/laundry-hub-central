@@ -105,7 +105,7 @@ export default function Catalog() {
     validUntil: "",
   });
 
-  const categories = [...new Set(services.map((s) => s.category))];
+  const categories = ["Bedding/Bath", "Accessories", "Home", "Undergarment", "Suits", "Dresses", "Children", "Traditional", "Tops", "Bottoms", "Outdoors", "Other"];
 
   const filteredServices = services.filter((service) => {
     const matchesSearch = service.name.toLowerCase().includes(search.toLowerCase());
