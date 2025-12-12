@@ -242,12 +242,11 @@ export default function Reports() {
                   Export
                 </Button>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-3">
                 {[
                   { label: "Daily Average", value: "KD 415", change: 8.3, trend: "up" },
                   { label: "Weekly Total", value: "KD 2,905", change: 12.1, trend: "up" },
                   { label: "Monthly Target", value: "85%", change: 5.2, trend: "up" },
-                  { label: "Conversion Rate", value: "42%", change: -2.4, trend: "down" },
                 ].map((item) => (
                   <div key={item.label} className="rounded-lg border border-border p-4">
                     <p className="text-sm text-muted-foreground">{item.label}</p>
@@ -259,21 +258,6 @@ export default function Reports() {
                         <ArrowDownRight className="mr-1 h-3 w-3" />
                       )}
                       {item.change > 0 ? "+" : ""}{item.change}%
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                {[
-                  { period: "Morning (6AM-12PM)", orders: 89, revenue: "KD 2,670" },
-                  { period: "Afternoon (12PM-6PM)", orders: 156, revenue: "KD 4,680" },
-                  { period: "Evening (6PM-10PM)", orders: 97, revenue: "KD 2,910" },
-                ].map((item) => (
-                  <div key={item.period} className="rounded-lg bg-muted/50 p-4">
-                    <p className="text-sm font-medium">{item.period}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-muted-foreground">{item.orders} orders</span>
-                      <span className="font-bold text-primary">{item.revenue}</span>
                     </div>
                   </div>
                 ))}
