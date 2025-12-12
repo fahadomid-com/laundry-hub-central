@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,10 @@ import {
   Key,
   Save,
   Settings,
+  Upload,
+  FileSpreadsheet,
+  Link,
+  X,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -66,6 +71,10 @@ const customerInsights = [
 
 export default function Reports() {
   const [dateRange, setDateRange] = useState("month");
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [googleSheetUrl, setGoogleSheetUrl] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // AI Configuration State
@@ -82,6 +91,41 @@ export default function Reports() {
   const [enableStreaming, setEnableStreaming] = useState(true);
   const [maxTokens, setMaxTokens] = useState("2048");
   const [temperature, setTemperature] = useState("0.7");
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validTypes = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv'
+      ];
+      if (validTypes.includes(file.type) || file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.csv')) {
+        setUploadedFile(file);
+        toast({ title: "File Selected", description: `${file.name} ready to import` });
+      } else {
+        toast({ title: "Invalid File", description: "Please upload an Excel (.xlsx, .xls) or CSV file", variant: "destructive" });
+      }
+    }
+  };
+
+  const handleImportData = () => {
+    if (uploadedFile) {
+      toast({ title: "Importing Data", description: `Processing ${uploadedFile.name}...` });
+      setUploadedFile(null);
+      setIsUploadDialogOpen(false);
+    } else if (googleSheetUrl) {
+      if (!googleSheetUrl.includes('docs.google.com/spreadsheets')) {
+        toast({ title: "Invalid URL", description: "Please enter a valid Google Sheets URL", variant: "destructive" });
+        return;
+      }
+      toast({ title: "Connecting to Google Sheets", description: "Importing data from your spreadsheet..." });
+      setGoogleSheetUrl("");
+      setIsUploadDialogOpen(false);
+    } else {
+      toast({ title: "No Data Source", description: "Please upload a file or enter a Google Sheets URL", variant: "destructive" });
+    }
+  };
 
   const handleSaveConfig = () => {
     toast({
@@ -120,6 +164,91 @@ export default function Reports() {
             <p className="mt-1 text-muted-foreground">Analytics and insights for your business</p>
           </div>
           <div className="flex gap-2">
+            <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Upload className="mr-2 h-4 w-4" />
+                  Import Data
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Import Spreadsheet Data</DialogTitle>
+                  <DialogDescription>
+                    Upload an Excel file or connect to Google Sheets
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-6 py-4">
+                  {/* Excel Upload */}
+                  <div className="space-y-3">
+                    <Label className="flex items-center gap-2">
+                      <FileSpreadsheet className="h-4 w-4" />
+                      Upload Excel File
+                    </Label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".xlsx,.xls,.csv"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    {uploadedFile ? (
+                      <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                        <div className="flex items-center gap-2">
+                          <FileSpreadsheet className="h-5 w-5 text-green-500" />
+                          <span className="text-sm font-medium">{uploadedFile.name}</span>
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => setUploadedFile(null)}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Upload className="mr-2 h-4 w-4" />
+                        Choose File (.xlsx, .xls, .csv)
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">Or</span>
+                    </div>
+                  </div>
+
+                  {/* Google Sheets URL */}
+                  <div className="space-y-3">
+                    <Label className="flex items-center gap-2">
+                      <Link className="h-4 w-4" />
+                      Google Sheets URL
+                    </Label>
+                    <Input
+                      placeholder="https://docs.google.com/spreadsheets/d/..."
+                      value={googleSheetUrl}
+                      onChange={(e) => setGoogleSheetUrl(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Make sure your Google Sheet is set to "Anyone with the link can view"
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={handleImportData} className="flex-1">
+                    Import Data
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
             <Select value={dateRange} onValueChange={setDateRange}>
               <SelectTrigger className="w-40 bg-background">
                 <Calendar className="mr-2 h-4 w-4" />
