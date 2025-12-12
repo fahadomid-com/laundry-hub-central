@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -25,6 +29,11 @@ import {
   Clock,
   Star,
   Target,
+  Bot,
+  Sparkles,
+  Key,
+  Save,
+  Settings,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -70,6 +79,28 @@ const operationalMetrics = [
 export default function Reports() {
   const [dateRange, setDateRange] = useState("month");
   const { toast } = useToast();
+
+  // AI Configuration State
+  const [systemPrompt, setSystemPrompt] = useState(
+    "You are an intelligent analytics assistant for a laundry business. Analyze data, identify trends, and provide actionable insights to improve business performance."
+  );
+  const [botInstructions, setBotInstructions] = useState(
+    "1. Analyze revenue trends and patterns\n2. Identify top-performing services\n3. Highlight customer behavior insights\n4. Suggest operational improvements\n5. Detect anomalies in data\n6. Provide predictive forecasts"
+  );
+  const [aiProvider, setAiProvider] = useState("openai");
+  const [openaiApiKey, setOpenaiApiKey] = useState("");
+  const [googleApiKey, setGoogleApiKey] = useState("");
+  const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
+  const [enableStreaming, setEnableStreaming] = useState(true);
+  const [maxTokens, setMaxTokens] = useState("2048");
+  const [temperature, setTemperature] = useState("0.7");
+
+  const handleSaveConfig = () => {
+    toast({
+      title: "Configuration Saved",
+      description: "AI settings have been updated successfully.",
+    });
+  };
 
   const handleExportReport = (reportType: string) => {
     toast({ title: "Exporting Report", description: `${reportType} report is being exported to PDF` });
@@ -154,6 +185,10 @@ export default function Reports() {
             <TabsTrigger value="services">Service Analytics</TabsTrigger>
             <TabsTrigger value="customers">Customer Insights</TabsTrigger>
             <TabsTrigger value="operations">Operations</TabsTrigger>
+            <TabsTrigger value="ai-config">
+              <Settings className="mr-2 h-4 w-4" />
+              AI Configuration
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="services" className="space-y-4">
@@ -365,6 +400,184 @@ export default function Reports() {
                 </div>
               </Card>
             </div>
+          </TabsContent>
+
+          <TabsContent value="ai-config" className="space-y-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* System Prompt */}
+              <Card className="p-6">
+                <h3 className="font-semibold flex items-center gap-2 mb-4">
+                  <Bot className="h-5 w-5 text-primary" />
+                  System Prompt
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Define the AI's personality and analytical behavior. This prompt sets the context for generating insights.
+                </p>
+                <Textarea
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  placeholder="Enter system prompt..."
+                  className="min-h-[200px]"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {systemPrompt.length} characters
+                </p>
+              </Card>
+
+              {/* Bot Instructions */}
+              <Card className="p-6">
+                <h3 className="font-semibold flex items-center gap-2 mb-4">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Bot Instructions
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Specific guidelines for generating reports and analytics insights.
+                </p>
+                <Textarea
+                  value={botInstructions}
+                  onChange={(e) => setBotInstructions(e.target.value)}
+                  placeholder="Enter bot instructions..."
+                  className="min-h-[200px]"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {botInstructions.split('\n').length} instructions
+                </p>
+              </Card>
+            </div>
+
+            {/* API Configuration */}
+            <Card className="p-6">
+              <h3 className="font-semibold flex items-center gap-2 mb-4">
+                <Key className="h-5 w-5 text-primary" />
+                API Configuration
+              </h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Configure your AI provider credentials and model settings for analytics.
+              </p>
+
+              <div className="grid gap-6 lg:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>AI Provider</Label>
+                    <Select value={aiProvider} onValueChange={setAiProvider}>
+                      <SelectTrigger className="bg-background">
+                        <SelectValue placeholder="Select provider" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        <SelectItem value="openai">OpenAI</SelectItem>
+                        <SelectItem value="google">Google AI (Gemini)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {aiProvider === "openai" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label>OpenAI API Key</Label>
+                        <Input
+                          type="password"
+                          value={openaiApiKey}
+                          onChange={(e) => setOpenaiApiKey(e.target.value)}
+                          placeholder="sk-..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Model</Label>
+                        <Select value={selectedModel} onValueChange={setSelectedModel}>
+                          <SelectTrigger className="bg-background">
+                            <SelectValue placeholder="Select model" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-popover">
+                            <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                            <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                            <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+
+                  {aiProvider === "google" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label>Google AI API Key</Label>
+                        <Input
+                          type="password"
+                          value={googleApiKey}
+                          onChange={(e) => setGoogleApiKey(e.target.value)}
+                          placeholder="AIza..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Model</Label>
+                        <Select value={selectedModel} onValueChange={setSelectedModel}>
+                          <SelectTrigger className="bg-background">
+                            <SelectValue placeholder="Select model" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-popover">
+                            <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
+                            <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
+                            <SelectItem value="gemini-1.5-flash">Gemini 1.5 Flash</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Max Tokens</Label>
+                    <Input
+                      type="number"
+                      value={maxTokens}
+                      onChange={(e) => setMaxTokens(e.target.value)}
+                      placeholder="2048"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Maximum response length (1-4096)
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Temperature</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="2"
+                      value={temperature}
+                      onChange={(e) => setTemperature(e.target.value)}
+                      placeholder="0.7"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Creativity level (0 = focused, 2 = creative)
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded-lg border border-border p-4">
+                    <div>
+                      <Label>Enable Streaming</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Stream responses in real-time
+                      </p>
+                    </div>
+                    <Switch
+                      checked={enableStreaming}
+                      onCheckedChange={setEnableStreaming}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <Button onClick={handleSaveConfig}>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Configuration
+                </Button>
+              </div>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
