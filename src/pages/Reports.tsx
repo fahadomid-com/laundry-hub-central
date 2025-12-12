@@ -231,6 +231,26 @@ export default function Reports() {
                   ))}
                 </div>
               </Card>
+
+              <Card className="p-4">
+                <h3 className="font-semibold mb-4">Orders by Membership Type</h3>
+                <div className="space-y-3">
+                  {[
+                    { type: "Platinum", count: 48, color: "bg-purple-500" },
+                    { type: "Gold", count: 112, color: "bg-yellow-500" },
+                    { type: "Silver", count: 89, color: "bg-gray-400" },
+                    { type: "No Membership", count: 93, color: "bg-gray-300" },
+                  ].map((item) => (
+                    <div key={item.type} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className={`h-3 w-3 rounded-full ${item.color}`} />
+                        <span>{item.type}</span>
+                      </div>
+                      <span className="font-medium">{item.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
             </div>
 
             {/* Sales Performance Analysis */}
