@@ -329,7 +329,7 @@ export default function Catalog() {
                       <SelectItem value="Express">Express</SelectItem>
                       <SelectItem value="Ironing">Ironing</SelectItem>
                       <SelectItem value="__add_new__" className="text-primary font-medium">
-                        + Add Extra Category
+                        + Add Extra Service
                       </SelectItem>
                     </SelectContent>
                   </Select>
