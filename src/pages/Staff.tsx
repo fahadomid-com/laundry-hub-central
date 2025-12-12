@@ -91,14 +91,18 @@ export default function Staff() {
     role: "",
     shift: "",
     phone: "",
+    email: "",
   });
   const [customRoles, setCustomRoles] = useState<string[]>([]);
   const [showCustomRole, setShowCustomRole] = useState(false);
   const [customRoleInput, setCustomRoleInput] = useState("");
+  const [customShifts, setCustomShifts] = useState<string[]>([]);
+  const [showCustomShift, setShowCustomShift] = useState(false);
+  const [customShiftInput, setCustomShiftInput] = useState("");
   const allRoles = [...defaultRoles, ...customRoles];
   const { toast } = useToast();
 
-  const shiftOptions = [
+  const defaultShiftOptions = [
     "6AM - 2PM",
     "8AM - 4PM",
     "9AM - 5PM",
@@ -106,6 +110,7 @@ export default function Staff() {
     "12PM - 8PM",
     "2PM - 10PM",
   ];
+  const allShifts = [...defaultShiftOptions, ...customShifts];
 
   const handleAddCustomRole = () => {
     if (!customRoleInput.trim()) return;
@@ -118,6 +123,19 @@ export default function Staff() {
     setCustomRoleInput("");
     setShowCustomRole(false);
     toast({ title: "Role added", description: `"${customRoleInput.trim()}" has been added as a role` });
+  };
+
+  const handleAddCustomShift = () => {
+    if (!customShiftInput.trim()) return;
+    if (allShifts.includes(customShiftInput.trim())) {
+      toast({ title: "Shift exists", description: "This shift already exists", variant: "destructive" });
+      return;
+    }
+    setCustomShifts((prev) => [...prev, customShiftInput.trim()]);
+    setNewStaff({ ...newStaff, shift: customShiftInput.trim() });
+    setCustomShiftInput("");
+    setShowCustomShift(false);
+    toast({ title: "Shift added", description: `"${customShiftInput.trim()}" has been added as a shift` });
   };
 
   const handleAddStaff = () => {
@@ -134,7 +152,7 @@ export default function Staff() {
       tasksCompleted: 0,
     };
     setStaff((prev) => [...prev, staffMember]);
-    setNewStaff({ name: "", role: "", shift: "", phone: "" });
+    setNewStaff({ name: "", role: "", shift: "", phone: "", email: "" });
     setAddDialogOpen(false);
     toast({ title: "Staff added", description: `${staffMember.name} has been added as ${staffMember.role}` });
   };
@@ -388,6 +406,16 @@ export default function Staff() {
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="email@example.com"
+                value={newStaff.email}
+                onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
               <Label>Role *</Label>
               {showCustomRole ? (
                 <div className="flex gap-2">
@@ -426,18 +454,40 @@ export default function Staff() {
             </div>
             <div className="space-y-2">
               <Label>Shift *</Label>
-              <Select value={newStaff.shift} onValueChange={(value) => setNewStaff({ ...newStaff, shift: value })}>
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select shift" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover">
-                  {shiftOptions.map((shift) => (
-                    <SelectItem key={shift} value={shift}>
-                      {shift}
+              {showCustomShift ? (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter custom shift (e.g., 7AM - 3PM)"
+                    value={customShiftInput}
+                    onChange={(e) => setCustomShiftInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddCustomShift()}
+                  />
+                  <Button type="button" onClick={handleAddCustomShift}>Add</Button>
+                  <Button type="button" variant="outline" onClick={() => { setShowCustomShift(false); setCustomShiftInput(""); }}>Cancel</Button>
+                </div>
+              ) : (
+                <Select value={newStaff.shift} onValueChange={(value) => {
+                  if (value === "__add_custom_shift__") {
+                    setShowCustomShift(true);
+                  } else {
+                    setNewStaff({ ...newStaff, shift: value });
+                  }
+                }}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select shift" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {allShifts.map((shift) => (
+                      <SelectItem key={shift} value={shift}>{shift}</SelectItem>
+                    ))}
+                    <SelectItem value="__add_custom_shift__" className="text-primary">
+                      <span className="flex items-center gap-1">
+                        <Plus className="h-3 w-3" /> Add Custom Shift
+                      </span>
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </div>
           <DialogFooter>
