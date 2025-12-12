@@ -319,34 +319,6 @@ export default function Reports() {
           </TabsContent>
 
           <TabsContent value="operations" className="space-y-4">
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold">Operational Performance</h3>
-                <Button variant="outline" size="sm" onClick={() => handleExportReport("Operations")}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </Button>
-              </div>
-              <div className="space-y-4">
-                {operationalMetrics.map((metric) => (
-                  <div
-                    key={metric.metric}
-                    className="flex items-center justify-between rounded-lg border border-border p-4"
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium">{metric.metric}</p>
-                      <p className="text-sm text-muted-foreground">Target: {metric.target}</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <p className="text-xl font-bold">{metric.value}</p>
-                      <Badge className={getStatusColor(metric.status)}>
-                        {metric.status === "excellent" ? "On Track" : "Needs Attention"}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Card className="p-4">
