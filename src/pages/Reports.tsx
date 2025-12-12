@@ -383,6 +383,32 @@ export default function Reports() {
                 ))}
               </div>
             </Card>
+
+            <Card className="p-4">
+              <h3 className="font-semibold mb-4">Customers by Location</h3>
+              <div className="space-y-3">
+                {[
+                  { location: "Kuwait City", count: 89, percentage: 30 },
+                  { location: "Hawally", count: 67, percentage: 23 },
+                  { location: "Salmiya", count: 52, percentage: 18 },
+                  { location: "Farwaniya", count: 45, percentage: 15 },
+                  { location: "Jahra", count: 38, percentage: 14 },
+                ].map((item) => (
+                  <div key={item.location} className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>{item.location}</span>
+                      <span className="font-medium">{item.count} customers</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-muted">
+                      <div
+                        className="h-2 rounded-full bg-primary"
+                        style={{ width: `${item.percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
           </TabsContent>
 
 
