@@ -285,7 +285,7 @@ export default function Catalog() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Category</Label>
+                <Label>Service</Label>
                 {showCustomCategory ? (
                   <div className="flex gap-2">
                     <Input
@@ -344,50 +344,6 @@ export default function Catalog() {
                   onChange={(e) => setNewService((p) => ({ ...p, price: parseFloat(e.target.value) || 0 }))}
                 />
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Unit</Label>
-                <Select
-                  value={newService.unit}
-                  onValueChange={(v) => setNewService((p) => ({ ...p, unit: v }))}
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="piece">Per Piece</SelectItem>
-                    <SelectItem value="kg">Per KG</SelectItem>
-                    <SelectItem value="addon">Addon</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label>Duration</Label>
-                <Select
-                  value={newService.duration}
-                  onValueChange={(v) => setNewService((p) => ({ ...p, duration: v }))}
-                >
-                  <SelectTrigger className="bg-background">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="6h">6 Hours</SelectItem>
-                    <SelectItem value="12h">12 Hours</SelectItem>
-                    <SelectItem value="24h">24 Hours</SelectItem>
-                    <SelectItem value="48h">48 Hours</SelectItem>
-                    <SelectItem value="72h">72 Hours</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Input
-                value={newService.description}
-                onChange={(e) => setNewService((p) => ({ ...p, description: e.target.value }))}
-                placeholder="Brief description of the service"
-              />
             </div>
           </div>
           <DialogFooter>
