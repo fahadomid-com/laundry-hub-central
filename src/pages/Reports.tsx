@@ -231,30 +231,6 @@ export default function Reports() {
                   ))}
                 </div>
               </Card>
-
-              <Card className="p-4">
-                <h3 className="font-semibold mb-4">Revenue by Payment Method</h3>
-                <div className="space-y-3">
-                  {[
-                    { method: "Card", amount: 7845, percentage: 63 },
-                    { method: "Cash", amount: 3105, percentage: 25 },
-                    { method: "Bank Transfer", amount: 1500, percentage: 12 },
-                  ].map((item) => (
-                    <div key={item.method}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span>{item.method}</span>
-                        <span className="font-medium">KD {item.amount.toLocaleString()}</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted">
-                        <div
-                          className="h-2 rounded-full bg-primary"
-                          style={{ width: `${item.percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
             </div>
 
             {/* Sales Performance Analysis */}
