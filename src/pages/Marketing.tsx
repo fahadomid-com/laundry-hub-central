@@ -543,6 +543,23 @@ export default function Marketing() {
                   </Select>
                 </div>
               </div>
+              <div className="space-y-2">
+                <Label>Subject</Label>
+                <Input
+                  value={(editCampaign as any).subject || ""}
+                  onChange={(e) => setEditCampaign((p) => p ? { ...p, subject: e.target.value } as any : null)}
+                  placeholder="Enter email/message subject"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Message</Label>
+                <Textarea
+                  value={(editCampaign as any).message || ""}
+                  onChange={(e) => setEditCampaign((p) => p ? { ...p, message: e.target.value } as any : null)}
+                  placeholder="Enter your campaign message content..."
+                  rows={4}
+                />
+              </div>
             </div>
           )}
           <DialogFooter>
