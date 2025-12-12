@@ -18,6 +18,8 @@ interface ExpenseSheetProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const defaultCategories = ["Supplies", "Utilities", "Transport", "Salary", "Other"];
+
 const expenses = [
   { id: 1, category: "Supplies", description: "Detergent bulk order", amount: "KD120.00", date: "Dec 12, 2025", icon: Droplets },
   { id: 2, category: "Utilities", description: "Electricity bill", amount: "KD85.50", date: "Dec 10, 2025", icon: Zap },
@@ -31,8 +33,12 @@ export function ExpenseSheet({ open, onOpenChange }: ExpenseSheetProps) {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [customCategories, setCustomCategories] = useState<string[]>([]);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
   const { toast } = useToast();
 
+  const allCategories = [...defaultCategories, ...customCategories];
   const totalExpenses = expenses.reduce((sum, exp) => sum + parseFloat(exp.amount.replace("KD", "")), 0);
 
   const handleAddExpense = (e: React.FormEvent) => {
@@ -48,6 +54,22 @@ export function ExpenseSheet({ open, onOpenChange }: ExpenseSheetProps) {
     setAmount("");
     setCategory("");
     setShowAddForm(false);
+  };
+
+  const handleAddCategory = () => {
+    if (!newCategoryName.trim()) {
+      toast({ title: "Invalid name", description: "Please enter a category name", variant: "destructive" });
+      return;
+    }
+    if (allCategories.includes(newCategoryName.trim())) {
+      toast({ title: "Already exists", description: "This category already exists", variant: "destructive" });
+      return;
+    }
+    setCustomCategories([...customCategories, newCategoryName.trim()]);
+    setCategory(newCategoryName.trim());
+    setNewCategoryName("");
+    setShowAddCategory(false);
+    toast({ title: "Category added", description: `"${newCategoryName.trim()}" added to expense types` });
   };
 
   return (
@@ -97,18 +119,41 @@ export function ExpenseSheet({ open, onOpenChange }: ExpenseSheetProps) {
                 </div>
                 <div className="space-y-2">
                   <Label>Category</Label>
-                  <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="bg-background">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover">
-                      <SelectItem value="Supplies">Supplies</SelectItem>
-                      <SelectItem value="Utilities">Utilities</SelectItem>
-                      <SelectItem value="Transport">Transport</SelectItem>
-                      <SelectItem value="Salary">Salary</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {showAddCategory ? (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="New category name"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        maxLength={50}
+                        className="flex-1"
+                      />
+                      <Button type="button" size="sm" onClick={handleAddCategory}>Add</Button>
+                      <Button type="button" size="sm" variant="outline" onClick={() => { setShowAddCategory(false); setNewCategoryName(""); }}>Cancel</Button>
+                    </div>
+                  ) : (
+                    <Select value={category} onValueChange={(val) => {
+                      if (val === "__add_new__") {
+                        setShowAddCategory(true);
+                      } else {
+                        setCategory(val);
+                      }
+                    }}>
+                      <SelectTrigger className="bg-background">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        {allCategories.map((cat) => (
+                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                        <SelectItem value="__add_new__" className="text-primary">
+                          <span className="flex items-center gap-1">
+                            <Plus className="h-3 w-3" /> Add Expense Type
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2">
