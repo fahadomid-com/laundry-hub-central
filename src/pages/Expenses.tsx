@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, Filter, Download, Droplets, Zap, Truck, Users, MoreHorizontal, Pencil, Trash2, Receipt } from "lucide-react";
+import { Plus, Search, Filter, Download, Droplets, Zap, Truck, Users, MoreHorizontal, Pencil, Trash2, Receipt, Upload, FileSpreadsheet, Link, X } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const defaultCategories = ["Supplies", "Utilities", "Transport", "Salary", "Maintenance", "Equipment", "Other"];
@@ -54,10 +54,14 @@ export default function Expenses() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<typeof initialExpenses[0] | null>(null);
   const [customCategories, setCustomCategories] = useState<string[]>([]);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [googleSheetUrl, setGoogleSheetUrl] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Form states
   const [description, setDescription] = useState("");
@@ -161,6 +165,41 @@ export default function Expenses() {
     setStatus("Pending");
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validTypes = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv'
+      ];
+      if (validTypes.includes(file.type) || file.name.endsWith('.xlsx') || file.name.endsWith('.xls') || file.name.endsWith('.csv')) {
+        setUploadedFile(file);
+        toast({ title: "File Selected", description: `${file.name} ready to import` });
+      } else {
+        toast({ title: "Invalid File", description: "Please upload an Excel (.xlsx, .xls) or CSV file", variant: "destructive" });
+      }
+    }
+  };
+
+  const handleImportData = () => {
+    if (uploadedFile) {
+      toast({ title: "Importing Expenses", description: `Processing ${uploadedFile.name}...` });
+      setUploadedFile(null);
+      setIsImportDialogOpen(false);
+    } else if (googleSheetUrl) {
+      if (!googleSheetUrl.includes('docs.google.com/spreadsheets')) {
+        toast({ title: "Invalid URL", description: "Please enter a valid Google Sheets URL", variant: "destructive" });
+        return;
+      }
+      toast({ title: "Connecting to Google Sheets", description: "Importing expenses from your spreadsheet..." });
+      setGoogleSheetUrl("");
+      setIsImportDialogOpen(false);
+    } else {
+      toast({ title: "No Data Source", description: "Please upload a file or enter a Google Sheets URL", variant: "destructive" });
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -171,6 +210,91 @@ export default function Expenses() {
             <p className="text-muted-foreground">Track and manage business expenses</p>
           </div>
           <div className="flex gap-2">
+            <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Upload className="mr-2 h-4 w-4" />
+                  Import
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Import Expenses</DialogTitle>
+                  <DialogDescription>
+                    Upload an Excel file or connect to Google Sheets
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-6 py-4">
+                  {/* Excel Upload */}
+                  <div className="space-y-3">
+                    <Label className="flex items-center gap-2">
+                      <FileSpreadsheet className="h-4 w-4" />
+                      Upload Excel File
+                    </Label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".xlsx,.xls,.csv"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    {uploadedFile ? (
+                      <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                        <div className="flex items-center gap-2">
+                          <FileSpreadsheet className="h-5 w-5 text-green-500" />
+                          <span className="text-sm font-medium">{uploadedFile.name}</span>
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => setUploadedFile(null)}>
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Upload className="mr-2 h-4 w-4" />
+                        Choose File (.xlsx, .xls, .csv)
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">Or</span>
+                    </div>
+                  </div>
+
+                  {/* Google Sheets URL */}
+                  <div className="space-y-3">
+                    <Label className="flex items-center gap-2">
+                      <Link className="h-4 w-4" />
+                      Google Sheets URL
+                    </Label>
+                    <Input
+                      placeholder="https://docs.google.com/spreadsheets/d/..."
+                      value={googleSheetUrl}
+                      onChange={(e) => setGoogleSheetUrl(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Make sure your Google Sheet is set to "Anyone with the link can view"
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={handleImportData} className="flex-1">
+                    Import Data
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsImportDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
             <Button variant="outline" size="sm">
               <Download className="mr-2 h-4 w-4" />
               Export
