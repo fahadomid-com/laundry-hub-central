@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -29,6 +30,8 @@ import {
   Plus,
   Edit,
   Trash2,
+  Eye,
+  PenSquare,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -299,62 +302,94 @@ export default function SettingsPage() {
               </Button>
             </div>
 
-            <Card>
+            <Card className="p-6">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border">
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Module</th>
-                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">View</th>
-                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Create</th>
-                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Edit</th>
-                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Delete</th>
-                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Full Access</th>
+                      <th className="px-6 py-4 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Module</th>
+                      <th className="px-6 py-4 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <Eye className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-xs font-medium text-muted-foreground">View</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <Plus className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-xs font-medium text-muted-foreground">Create</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <PenSquare className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-xs font-medium text-muted-foreground">Edit</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <Trash2 className="h-5 w-5 text-muted-foreground" />
+                          <span className="text-xs font-medium text-muted-foreground">Delete</span>
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-center">
+                        <span className="text-sm font-medium text-muted-foreground">Full Access</span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
                     {permissions[selectedRole].map((perm, index) => (
                       <tr key={perm.module} className="hover:bg-muted/50 transition-colors">
-                        <td className="whitespace-nowrap px-4 py-3 text-sm font-medium">{perm.module}</td>
-                        <td className="whitespace-nowrap px-4 py-3 text-center">
-                          <Checkbox
-                            checked={perm.view}
-                            onCheckedChange={(checked) =>
-                              handlePermissionChange(selectedRole, index, "view", !!checked)
-                            }
-                          />
+                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">{perm.module}</td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="flex justify-center">
+                            <Checkbox
+                              checked={perm.view}
+                              onCheckedChange={(checked) =>
+                                handlePermissionChange(selectedRole, index, "view", !!checked)
+                              }
+                            />
+                          </div>
                         </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-center">
-                          <Checkbox
-                            checked={perm.create}
-                            onCheckedChange={(checked) =>
-                              handlePermissionChange(selectedRole, index, "create", !!checked)
-                            }
-                          />
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="flex justify-center">
+                            <Checkbox
+                              checked={perm.create}
+                              onCheckedChange={(checked) =>
+                                handlePermissionChange(selectedRole, index, "create", !!checked)
+                              }
+                            />
+                          </div>
                         </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-center">
-                          <Checkbox
-                            checked={perm.edit}
-                            onCheckedChange={(checked) =>
-                              handlePermissionChange(selectedRole, index, "edit", !!checked)
-                            }
-                          />
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="flex justify-center">
+                            <Checkbox
+                              checked={perm.edit}
+                              onCheckedChange={(checked) =>
+                                handlePermissionChange(selectedRole, index, "edit", !!checked)
+                              }
+                            />
+                          </div>
                         </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-center">
-                          <Checkbox
-                            checked={perm.delete}
-                            onCheckedChange={(checked) =>
-                              handlePermissionChange(selectedRole, index, "delete", !!checked)
-                            }
-                          />
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="flex justify-center">
+                            <Checkbox
+                              checked={perm.delete}
+                              onCheckedChange={(checked) =>
+                                handlePermissionChange(selectedRole, index, "delete", !!checked)
+                              }
+                            />
+                          </div>
                         </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-center">
-                          <Checkbox
-                            checked={perm.fullAccess}
-                            onCheckedChange={(checked) =>
-                              handlePermissionChange(selectedRole, index, "fullAccess", !!checked)
-                            }
-                          />
+                        <td className="whitespace-nowrap px-6 py-4">
+                          <div className="flex justify-center">
+                            <Switch
+                              checked={perm.fullAccess}
+                              onCheckedChange={(checked) =>
+                                handlePermissionChange(selectedRole, index, "fullAccess", checked)
+                              }
+                            />
+                          </div>
                         </td>
                       </tr>
                     ))}
