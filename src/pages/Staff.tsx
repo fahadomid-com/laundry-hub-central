@@ -22,12 +22,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Users,
   CheckCircle,
   Clock,
   Coffee,
   Plus,
   RefreshCw,
+  MoreVertical,
+  Edit,
+  Trash2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -84,7 +93,9 @@ export default function Staff() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+  const [editStaff, setEditStaff] = useState<Staff | null>(null);
   const [selectedTask, setSelectedTask] = useState("");
   const [newStaff, setNewStaff] = useState({
     name: "",
@@ -217,6 +228,27 @@ export default function Staff() {
     setAssignDialogOpen(true);
   };
 
+  const openEditDialog = (staffMember: Staff) => {
+    setEditStaff({ ...staffMember });
+    setEditDialogOpen(true);
+  };
+
+  const handleUpdateStaff = () => {
+    if (!editStaff || !editStaff.name || !editStaff.role || !editStaff.shift) {
+      toast({ title: "Missing fields", description: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+    setStaff((prev) => prev.map((s) => (s.id === editStaff.id ? editStaff : s)));
+    setEditDialogOpen(false);
+    setEditStaff(null);
+    toast({ title: "Staff updated", description: `${editStaff.name} has been updated` });
+  };
+
+  const handleDeleteStaff = (staffMember: Staff) => {
+    setStaff((prev) => prev.filter((s) => s.id !== staffMember.id));
+    toast({ title: "Staff deleted", description: `${staffMember.name} has been removed` });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
@@ -288,10 +320,32 @@ export default function Staff() {
                         </Badge>
                       </div>
                     </div>
-                    <Badge className={statusConfig[member.status].color}>
-                      <StatusIcon className="mr-1 h-3 w-3" />
-                      {member.status}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge className={statusConfig[member.status].color}>
+                        <StatusIcon className="mr-1 h-3 w-3" />
+                        {member.status}
+                      </Badge>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-popover">
+                          <DropdownMenuItem onClick={() => openEditDialog(member)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => handleDeleteStaff(member)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
 
                   <div className="mt-4 space-y-2 text-sm">
@@ -496,6 +550,78 @@ export default function Staff() {
             </Button>
             <Button onClick={handleAddStaff}>
               Add Staff
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Staff Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="bg-card">
+          <DialogHeader>
+            <DialogTitle>Edit Staff</DialogTitle>
+            <DialogDescription>
+              Update staff member details
+            </DialogDescription>
+          </DialogHeader>
+          {editStaff && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-name">Full Name *</Label>
+                <Input
+                  id="edit-name"
+                  placeholder="Enter full name"
+                  value={editStaff.name}
+                  onChange={(e) => setEditStaff({ ...editStaff, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Role *</Label>
+                <Select value={editStaff.role} onValueChange={(value) => setEditStaff({ ...editStaff, role: value })}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {allRoles.map((role) => (
+                      <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Shift *</Label>
+                <Select value={editStaff.shift} onValueChange={(value) => setEditStaff({ ...editStaff, shift: value })}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select shift" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {allShifts.map((shift) => (
+                      <SelectItem key={shift} value={shift}>{shift}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={editStaff.status} onValueChange={(value) => setEditStaff({ ...editStaff, status: value as Staff["status"] })}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Busy">Busy</SelectItem>
+                    <SelectItem value="On Break">On Break</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateStaff}>
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>
