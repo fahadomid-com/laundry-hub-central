@@ -34,8 +34,6 @@ import {
   Edit,
   Trash2,
   Package,
-  Tag,
-  Percent,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -175,20 +173,14 @@ export default function Catalog() {
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Catalog</h1>
             <p className="mt-1 text-muted-foreground">Manage services, pricing, and offers</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setAddOfferOpen(true)}>
-              <Percent className="mr-2 h-4 w-4" />
-              Add Offer
-            </Button>
-            <Button onClick={() => setAddServiceOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Service
-            </Button>
-          </div>
+          <Button onClick={() => setAddServiceOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Service
+          </Button>
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-1">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <Package className="h-8 w-8 text-primary" />
@@ -198,63 +190,7 @@ export default function Catalog() {
               </div>
             </div>
           </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <Tag className="h-8 w-8 text-success" />
-              <div>
-                <p className="text-2xl font-bold">{services.filter((s) => s.active).length}</p>
-                <p className="text-sm text-muted-foreground">Active Services</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <Percent className="h-8 w-8 text-warning" />
-              <div>
-                <p className="text-2xl font-bold">{offers.filter((o) => o.active).length}</p>
-                <p className="text-sm text-muted-foreground">Active Offers</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <Package className="h-8 w-8 text-info" />
-              <div>
-                <p className="text-2xl font-bold">{categories.length}</p>
-                <p className="text-sm text-muted-foreground">Categories</p>
-              </div>
-            </div>
-          </Card>
         </div>
-
-        {/* Offers Section */}
-        <Card className="p-4">
-          <h2 className="text-lg font-semibold mb-4">Active Offers & Promotions</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {offers.map((offer) => (
-              <div
-                key={offer.id}
-                className={`flex items-center justify-between rounded-lg border p-4 ${
-                  offer.active ? "border-success/50 bg-success/5" : "border-border opacity-60"
-                }`}
-              >
-                <div>
-                  <p className="font-medium">{offer.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {offer.type === "percentage" ? `${offer.discount}% off` : `KD${offer.discount} off`}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Valid until {offer.validUntil}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch checked={offer.active} onCheckedChange={() => handleToggleOffer(offer.id)} />
-                  <Button variant="ghost" size="icon" onClick={() => handleDeleteOffer(offer.id)}>
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
 
         {/* Services Section */}
         <Card className="p-4">
