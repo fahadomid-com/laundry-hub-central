@@ -58,7 +58,7 @@ interface Customer {
   phone: string;
   email: string;
   address: string;
-  tier: "Bronze" | "Silver" | "Gold" | "Platinum";
+  tier: "No Membership" | "Silver" | "Gold" | "Platinum";
   totalOrders: number;
   totalSpent: number;
   loyaltyPoints: number;
@@ -71,13 +71,13 @@ const initialCustomers: Customer[] = [
   { id: "1", name: "John Doe", phone: "+965 1234 5678", email: "john@email.com", address: "Block 5, Salmiya", tier: "Gold", totalOrders: 45, totalSpent: 890.50, loyaltyPoints: 445, joinDate: "Jan 15, 2024", lastOrder: "Dec 10, 2025", notes: "VIP customer" },
   { id: "2", name: "Jane Smith", phone: "+965 2345 6789", email: "jane@email.com", address: "Block 3, Hawally", tier: "Platinum", totalOrders: 120, totalSpent: 2450.00, loyaltyPoints: 1225, joinDate: "Mar 22, 2023", lastOrder: "Dec 11, 2025", notes: "" },
   { id: "3", name: "Mike Johnson", phone: "+965 3456 7890", email: "mike@email.com", address: "Block 1, Kuwait City", tier: "Silver", totalOrders: 18, totalSpent: 320.75, loyaltyPoints: 160, joinDate: "Aug 10, 2024", lastOrder: "Dec 8, 2025", notes: "Prefers express service" },
-  { id: "4", name: "Sarah Wilson", phone: "+965 4567 8901", email: "sarah@email.com", address: "Block 7, Farwaniya", tier: "Bronze", totalOrders: 5, totalSpent: 85.00, loyaltyPoints: 42, joinDate: "Nov 20, 2025", lastOrder: "Dec 5, 2025", notes: "" },
+  { id: "4", name: "Sarah Wilson", phone: "+965 4567 8901", email: "sarah@email.com", address: "Block 7, Farwaniya", tier: "No Membership", totalOrders: 5, totalSpent: 85.00, loyaltyPoints: 42, joinDate: "Nov 20, 2025", lastOrder: "Dec 5, 2025", notes: "" },
   { id: "5", name: "Emily Davis", phone: "+965 5678 9012", email: "emily@email.com", address: "Block 2, Salmiya", tier: "Gold", totalOrders: 52, totalSpent: 1120.00, loyaltyPoints: 560, joinDate: "Feb 14, 2024", lastOrder: "Dec 9, 2025", notes: "Corporate account" },
   { id: "6", name: "Michael Brown", phone: "+965 6789 0123", email: "michael@email.com", address: "Block 4, Jabriya", tier: "Silver", totalOrders: 22, totalSpent: 445.50, loyaltyPoints: 222, joinDate: "Jun 5, 2024", lastOrder: "Dec 7, 2025", notes: "" },
 ];
 
 const tierConfig = {
-  Bronze: { color: "bg-orange-100 text-orange-800", icon: Star },
+  "No Membership": { color: "bg-gray-100 text-gray-800", icon: Star },
   Silver: { color: "bg-gray-100 text-gray-800", icon: Star },
   Gold: { color: "bg-yellow-100 text-yellow-800", icon: Crown },
   Platinum: { color: "bg-purple-100 text-purple-800", icon: Crown },
@@ -114,7 +114,7 @@ export default function Customers() {
     const customer: Customer = {
       id: String(customers.length + 1),
       ...newCustomer,
-      tier: "Bronze",
+      tier: "No Membership",
       totalOrders: 0,
       totalSpent: 0,
       loyaltyPoints: 0,
@@ -227,7 +227,7 @@ export default function Customers() {
               </SelectTrigger>
               <SelectContent className="bg-popover">
                 <SelectItem value="all">All Tiers</SelectItem>
-                <SelectItem value="Bronze">Bronze</SelectItem>
+                <SelectItem value="No Membership">No Membership</SelectItem>
                 <SelectItem value="Silver">Silver</SelectItem>
                 <SelectItem value="Gold">Gold</SelectItem>
                 <SelectItem value="Platinum">Platinum</SelectItem>
