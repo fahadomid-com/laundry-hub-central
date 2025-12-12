@@ -53,6 +53,8 @@ export default function Expenses() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingExpense, setEditingExpense] = useState<typeof initialExpenses[0] | null>(null);
   const [customCategories, setCustomCategories] = useState<string[]>([]);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -121,6 +123,34 @@ export default function Expenses() {
   const handleDeleteExpense = (id: number) => {
     setExpenses(expenses.filter(e => e.id !== id));
     toast({ title: "Expense deleted", description: "Expense has been removed" });
+  };
+
+  const handleEditExpense = (expense: typeof initialExpenses[0]) => {
+    setEditingExpense(expense);
+    setDescription(expense.description);
+    setAmount(expense.amount.toString());
+    setCategory(expense.category);
+    setDate(expense.date);
+    setStatus(expense.status);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateExpense = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingExpense || !description || !amount || !category || !date) {
+      toast({ title: "Missing fields", description: "Please fill all required fields", variant: "destructive" });
+      return;
+    }
+    
+    setExpenses(expenses.map(exp => 
+      exp.id === editingExpense.id 
+        ? { ...exp, description, amount: parseFloat(amount), category, date, status }
+        : exp
+    ));
+    toast({ title: "Expense updated", description: "Expense has been updated" });
+    resetForm();
+    setIsEditDialogOpen(false);
+    setEditingExpense(null);
   };
 
   const resetForm = () => {
@@ -361,7 +391,7 @@ export default function Expenses() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="bg-popover">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEditExpense(expense)}>
                               <Pencil className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
@@ -386,6 +416,106 @@ export default function Expenses() {
             </Table>
           </CardContent>
         </Card>
+
+        {/* Edit Expense Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
+          setIsEditDialogOpen(open);
+          if (!open) {
+            resetForm();
+            setEditingExpense(null);
+          }
+        }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Edit Expense</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleUpdateExpense} className="space-y-4">
+              <div className="space-y-2">
+                <Label>Description</Label>
+                <Input 
+                  placeholder="Enter expense description" 
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  maxLength={100}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Amount (KD)</Label>
+                  <Input 
+                    type="number" 
+                    placeholder="0.00" 
+                    step="0.01"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Date</Label>
+                  <Input 
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Category</Label>
+                {showAddCategory ? (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="New category name"
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      maxLength={50}
+                      className="flex-1"
+                    />
+                    <Button type="button" size="sm" onClick={handleAddCategory}>Add</Button>
+                    <Button type="button" size="sm" variant="outline" onClick={() => { setShowAddCategory(false); setNewCategoryName(""); }}>Cancel</Button>
+                  </div>
+                ) : (
+                  <Select value={category} onValueChange={(val) => {
+                    if (val === "__add_new__") {
+                      setShowAddCategory(true);
+                    } else {
+                      setCategory(val);
+                    }
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {allCategories.map((cat) => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))}
+                      <SelectItem value="__add_new__" className="text-primary">
+                        <span className="flex items-center gap-1">
+                          <Plus className="h-3 w-3" /> Add Expense Type
+                        </span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="Pending">Pending</SelectItem>
+                    <SelectItem value="Paid">Paid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button type="submit" className="flex-1">Update Expense</Button>
+                <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancel</Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
