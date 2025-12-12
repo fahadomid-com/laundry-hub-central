@@ -283,14 +283,6 @@ export default function Catalog() {
             <DialogDescription>Create a new service for your catalog</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Service Name</Label>
-              <Input
-                value={newService.name}
-                onChange={(e) => setNewService((p) => ({ ...p, name: e.target.value }))}
-                placeholder="e.g., Shirt - Wash & Iron"
-              />
-            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Category</Label>
