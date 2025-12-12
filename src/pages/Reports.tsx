@@ -49,7 +49,6 @@ const kpiCards: ReportCard[] = [
   { title: "Total Revenue", value: "KD 12,450", change: 12.5, icon: DollarSign, trend: "up" },
   { title: "Orders Completed", value: "342", change: 8.2, icon: ShoppingCart, trend: "up" },
   { title: "New Customers", value: "28", change: -3.1, icon: Users, trend: "down" },
-  { title: "Avg Order Value", value: "KD 36.40", change: 5.8, icon: Target, trend: "up" },
 ];
 
 const topServices = [
