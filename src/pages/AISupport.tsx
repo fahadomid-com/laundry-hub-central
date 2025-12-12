@@ -206,7 +206,7 @@ export default function AISupport() {
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-3">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <MessageSquare className="h-8 w-8 text-primary" />
@@ -231,15 +231,6 @@ export default function AISupport() {
               <div>
                 <p className="text-2xl font-bold">{stats.resolved}</p>
                 <p className="text-sm text-muted-foreground">Resolved</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4 bg-purple-50 dark:bg-purple-950/20">
-            <div className="flex items-center gap-3">
-              <Zap className="h-8 w-8 text-purple-600" />
-              <div>
-                <p className="text-2xl font-bold">{stats.avgResponseTime}</p>
-                <p className="text-sm text-muted-foreground">Avg Response</p>
               </div>
             </div>
           </Card>
