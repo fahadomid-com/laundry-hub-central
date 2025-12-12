@@ -84,6 +84,9 @@ export default function Catalog() {
   const [editService, setEditService] = useState<Service | null>(null);
   const [showCustomCategory, setShowCustomCategory] = useState(false);
   const [customCategory, setCustomCategory] = useState("");
+  const [showCustomType, setShowCustomType] = useState(false);
+  const [customType, setCustomType] = useState("");
+  const [serviceType, setServiceType] = useState("Normal");
   const { toast } = useToast();
 
   const [newService, setNewService] = useState({
@@ -283,6 +286,55 @@ export default function Catalog() {
             <DialogDescription>Create a new service for your catalog</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Service Type</Label>
+              {showCustomType ? (
+                <div className="flex gap-2">
+                  <Input
+                    value={customType}
+                    onChange={(e) => setCustomType(e.target.value)}
+                    placeholder="Enter new type"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (customType.trim()) {
+                        setServiceType(customType.trim());
+                      }
+                      setShowCustomType(false);
+                      setCustomType("");
+                    }}
+                  >
+                    Done
+                  </Button>
+                </div>
+              ) : (
+                <Select
+                  value={serviceType}
+                  onValueChange={(v) => {
+                    if (v === "__add_type__") {
+                      setShowCustomType(true);
+                    } else {
+                      setServiceType(v);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="Express">Express</SelectItem>
+                    <SelectItem value="Extras">Extras</SelectItem>
+                    <SelectItem value="__add_type__" className="text-primary font-medium">
+                      + Add Extra Type
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Service</Label>
