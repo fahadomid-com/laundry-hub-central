@@ -3,25 +3,165 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, Save, Upload } from "lucide-react";
+import {
+  Users,
+  Shield,
+  Search,
+  Filter,
+  Plus,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  role: "Admin" | "Employee";
+  branch: string;
+  status: "Active" | "Inactive";
+  lastLogin: string;
+  ipAddress: string;
+  deviceType: string;
+}
+
+interface Permission {
+  module: string;
+  view: boolean;
+  create: boolean;
+  edit: boolean;
+  delete: boolean;
+  fullAccess: boolean;
+}
+
+const initialUsers: User[] = [
+  { id: "1", name: "Ahmed Al-Mansouri", email: "ahmed@printo.press", mobile: "+965 9876 5432", role: "Admin", branch: "All Branches", status: "Active", lastLogin: "2024-01-15 14:30", ipAddress: "192.168.1.100", deviceType: "Desktop" },
+  { id: "2", name: "Fatima Al-Zahra", email: "fatima@printo.press", mobile: "+965 9765 4321", role: "Employee", branch: "Salmiya", status: "Active", lastLogin: "2024-01-15 12:45", ipAddress: "192.168.1.105", deviceType: "Mobile" },
+  { id: "3", name: "Omar Hassan", email: "omar@printo.press", mobile: "+965 9654 3210", role: "Employee", branch: "City", status: "Active", lastLogin: "2024-01-15 09:15", ipAddress: "192.168.1.112", deviceType: "Desktop" },
+  { id: "4", name: "Noura Al-Sabah", email: "noura@printo.press", mobile: "+965 9543 2109", role: "Employee", branch: "Hawally", status: "Inactive", lastLogin: "2024-01-10 16:20", ipAddress: "192.168.1.98", deviceType: "Tablet" },
+  { id: "5", name: "Hasan Al-Rashid", email: "hasan@printo.press", mobile: "+965 9432 1098", role: "Admin", branch: "Salmiya", status: "Active", lastLogin: "2024-01-15 11:30", ipAddress: "192.168.1.120", deviceType: "Desktop" },
+];
+
+const modules = [
+  "Dashboard",
+  "Orders",
+  "Catalog",
+  "Customers",
+  "Drivers",
+  "Staff",
+  "Finance",
+  "Reports",
+  "Marketing",
+  "Settings",
+];
+
+const initialPermissions: Record<string, Permission[]> = {
+  Admin: modules.map((module) => ({
+    module,
+    view: true,
+    create: true,
+    edit: true,
+    delete: true,
+    fullAccess: true,
+  })),
+  Employee: modules.map((module) => ({
+    module,
+    view: true,
+    create: module !== "Settings" && module !== "Finance",
+    edit: module !== "Settings" && module !== "Finance",
+    delete: false,
+    fullAccess: false,
+  })),
+};
 
 export default function SettingsPage() {
-  const { user } = useAuth();
   const { toast } = useToast();
-
-  const [profile, setProfile] = useState({
-    name: user?.name || "Admin User",
-    email: user?.email || "admin@laundry.com",
-    phone: "+965 1234 5678",
-    role: "Administrator",
+  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [search, setSearch] = useState("");
+  const [branchFilter, setBranchFilter] = useState("all");
+  const [selectedRole, setSelectedRole] = useState<"Admin" | "Employee">("Admin");
+  const [permissions, setPermissions] = useState(initialPermissions);
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    role: "Employee" as "Admin" | "Employee",
+    branch: "Salmiya",
   });
 
-  const handleSaveProfile = () => {
-    toast({ title: "Profile updated", description: "Your profile has been saved successfully" });
+  const branches = ["All Branches", "Salmiya", "City", "Hawally", "Farwaniya"];
+
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase());
+    const matchesBranch = branchFilter === "all" || user.branch === branchFilter;
+    return matchesSearch && matchesBranch;
+  });
+
+  const handleAddUser = () => {
+    if (!newUser.name || !newUser.email) return;
+    const user: User = {
+      id: String(users.length + 1),
+      ...newUser,
+      status: "Active",
+      lastLogin: "Never",
+      ipAddress: "-",
+      deviceType: "-",
+    };
+    setUsers((prev) => [...prev, user]);
+    setNewUser({ name: "", email: "", mobile: "", role: "Employee", branch: "Salmiya" });
+    setAddUserOpen(false);
+    toast({ title: "User added", description: `${user.name} has been added successfully` });
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    setUsers((prev) => prev.filter((u) => u.id !== userId));
+    toast({ title: "User deleted", description: "User has been removed" });
+  };
+
+  const handlePermissionChange = (
+    role: "Admin" | "Employee",
+    moduleIndex: number,
+    field: keyof Permission,
+    value: boolean
+  ) => {
+    setPermissions((prev) => {
+      const updated = { ...prev };
+      updated[role] = [...updated[role]];
+      updated[role][moduleIndex] = { ...updated[role][moduleIndex], [field]: value };
+
+      if (field === "fullAccess" && value) {
+        updated[role][moduleIndex].view = true;
+        updated[role][moduleIndex].create = true;
+        updated[role][moduleIndex].edit = true;
+        updated[role][moduleIndex].delete = true;
+      }
+
+      return updated;
+    });
+    toast({ title: "Permission updated", description: "Changes saved automatically" });
   };
 
   return (
@@ -29,74 +169,278 @@ export default function SettingsPage() {
       <div className="space-y-6 animate-fade-in">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Settings</h1>
-          <p className="mt-1 text-muted-foreground">Manage your account and application preferences</p>
         </div>
 
-        <div className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
-          <div className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium bg-background text-foreground shadow-sm">
-            <User className="mr-2 h-4 w-4" />
-            Profile
-          </div>
-        </div>
+        <Tabs defaultValue="users" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="users">
+              <Users className="mr-2 h-4 w-4" />
+              Users & Roles
+            </TabsTrigger>
+            <TabsTrigger value="permissions">
+              <Shield className="mr-2 h-4 w-4" />
+              Permissions
+            </TabsTrigger>
+          </TabsList>
 
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-6">Profile Information</h3>
-          
-          <div className="flex flex-col sm:flex-row gap-6 mb-6">
-            <div className="flex flex-col items-center gap-3">
-              <Avatar className="h-24 w-24">
-                <AvatarFallback className="bg-primary/10 text-primary text-2xl">
-                  {profile.name.split(" ").map((n) => n[0]).join("")}
-                </AvatarFallback>
-              </Avatar>
-              <Button variant="outline" size="sm">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Photo
+          <TabsContent value="users" className="space-y-4">
+            <p className="text-muted-foreground">Invite/manage users and roles.</p>
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="relative w-full sm:w-80">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search users..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Select value={branchFilter} onValueChange={setBranchFilter}>
+                  <SelectTrigger className="w-40 bg-background">
+                    <Filter className="mr-2 h-4 w-4" />
+                    <SelectValue placeholder="Branch" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="all">All Branches</SelectItem>
+                    {branches.map((branch) => (
+                      <SelectItem key={branch} value={branch}>
+                        {branch}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button onClick={() => setAddUserOpen(true)}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Add User
+                </Button>
+              </div>
+            </div>
+
+            <Card>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Name</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Email</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Mobile</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Role</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Branch</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Status</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Last Login</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">IP Address</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Device Type</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {filteredUsers.map((user) => (
+                      <tr key={user.id} className="hover:bg-muted/50 transition-colors">
+                        <td className="whitespace-nowrap px-4 py-3 text-sm font-medium">{user.name}</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">{user.email}</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">{user.mobile}</td>
+                        <td className="whitespace-nowrap px-4 py-3">
+                          <Badge variant={user.role === "Admin" ? "default" : "secondary"}>
+                            {user.role}
+                          </Badge>
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">{user.branch}</td>
+                        <td className="whitespace-nowrap px-4 py-3">
+                          <Badge variant={user.status === "Active" ? "success" : "outline"}>
+                            {user.status}
+                          </Badge>
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">{user.lastLogin}</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">{user.ipAddress}</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">{user.deviceType}</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-right">
+                          <div className="flex justify-end gap-1">
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
+                              onClick={() => handleDeleteUser(user.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="permissions" className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold">Role-Based Permissions</h3>
+              <p className="text-muted-foreground">Configure access levels for each role across all modules.</p>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                variant={selectedRole === "Admin" ? "default" : "outline"}
+                onClick={() => setSelectedRole("Admin")}
+              >
+                Admin
+              </Button>
+              <Button
+                variant={selectedRole === "Employee" ? "default" : "outline"}
+                onClick={() => setSelectedRole("Employee")}
+              >
+                Employee
               </Button>
             </div>
 
-            <div className="flex-1 space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Full Name</Label>
-                  <Input
-                    value={profile.name}
-                    onChange={(e) => setProfile((p) => ({ ...p, name: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Email</Label>
-                  <Input
-                    type="email"
-                    value={profile.email}
-                    onChange={(e) => setProfile((p) => ({ ...p, email: e.target.value }))}
-                  />
-                </div>
+            <Card>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">Module</th>
+                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">View</th>
+                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Create</th>
+                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Edit</th>
+                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Delete</th>
+                      <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">Full Access</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {permissions[selectedRole].map((perm, index) => (
+                      <tr key={perm.module} className="hover:bg-muted/50 transition-colors">
+                        <td className="whitespace-nowrap px-4 py-3 text-sm font-medium">{perm.module}</td>
+                        <td className="whitespace-nowrap px-4 py-3 text-center">
+                          <Checkbox
+                            checked={perm.view}
+                            onCheckedChange={(checked) =>
+                              handlePermissionChange(selectedRole, index, "view", !!checked)
+                            }
+                          />
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3 text-center">
+                          <Checkbox
+                            checked={perm.create}
+                            onCheckedChange={(checked) =>
+                              handlePermissionChange(selectedRole, index, "create", !!checked)
+                            }
+                          />
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3 text-center">
+                          <Checkbox
+                            checked={perm.edit}
+                            onCheckedChange={(checked) =>
+                              handlePermissionChange(selectedRole, index, "edit", !!checked)
+                            }
+                          />
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3 text-center">
+                          <Checkbox
+                            checked={perm.delete}
+                            onCheckedChange={(checked) =>
+                              handlePermissionChange(selectedRole, index, "delete", !!checked)
+                            }
+                          />
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3 text-center">
+                          <Checkbox
+                            checked={perm.fullAccess}
+                            onCheckedChange={(checked) =>
+                              handlePermissionChange(selectedRole, index, "fullAccess", !!checked)
+                            }
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Phone</Label>
-                  <Input
-                    value={profile.phone}
-                    onChange={(e) => setProfile((p) => ({ ...p, phone: e.target.value }))}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Role</Label>
-                  <Input value={profile.role} disabled />
-                </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      <Dialog open={addUserOpen} onOpenChange={setAddUserOpen}>
+        <DialogContent className="bg-card">
+          <DialogHeader>
+            <DialogTitle>Add New User</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Full Name</Label>
+              <Input
+                value={newUser.name}
+                onChange={(e) => setNewUser((p) => ({ ...p, name: e.target.value }))}
+                placeholder="Enter name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={newUser.email}
+                onChange={(e) => setNewUser((p) => ({ ...p, email: e.target.value }))}
+                placeholder="Enter email"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Mobile</Label>
+              <Input
+                value={newUser.mobile}
+                onChange={(e) => setNewUser((p) => ({ ...p, mobile: e.target.value }))}
+                placeholder="+965 XXXX XXXX"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Role</Label>
+                <Select
+                  value={newUser.role}
+                  onValueChange={(v) => setNewUser((p) => ({ ...p, role: v as "Admin" | "Employee" }))}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    <SelectItem value="Admin">Admin</SelectItem>
+                    <SelectItem value="Employee">Employee</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Branch</Label>
+                <Select
+                  value={newUser.branch}
+                  onValueChange={(v) => setNewUser((p) => ({ ...p, branch: v }))}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {branches.map((branch) => (
+                      <SelectItem key={branch} value={branch}>
+                        {branch}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
-
-          <div className="flex justify-end">
-            <Button onClick={handleSaveProfile}>
-              <Save className="mr-2 h-4 w-4" />
-              Save Changes
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddUserOpen(false)}>
+              Cancel
             </Button>
-          </div>
-        </Card>
-      </div>
+            <Button onClick={handleAddUser}>Add User</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 }
