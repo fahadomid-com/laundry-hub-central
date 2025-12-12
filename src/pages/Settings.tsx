@@ -74,6 +74,7 @@ const modules = [
   "Staff",
   "Finance",
   "Reports",
+  "AI Support & Bot",
   "Marketing",
   "Settings",
 ];
