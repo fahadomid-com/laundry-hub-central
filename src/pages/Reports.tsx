@@ -305,7 +305,7 @@ export default function Reports() {
                   { tier: "Platinum", count: 12, revenue: "KD 4,200", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
                   { tier: "Gold", count: 45, revenue: "KD 5,100", color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400" },
                   { tier: "Silver", count: 78, revenue: "KD 2,340", color: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400" },
-                  { tier: "Bronze", count: 156, revenue: "KD 810", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
+                  { tier: "No Membership", count: 156, revenue: "KD 810", color: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400" },
                 ].map((segment) => (
                   <Card key={segment.tier} className="p-4 text-center">
                     <Badge className={segment.color}>{segment.tier}</Badge>
