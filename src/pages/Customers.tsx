@@ -152,6 +152,8 @@ export default function Customers() {
     total: customers.length,
     platinum: customers.filter((c) => c.tier === "Platinum").length,
     gold: customers.filter((c) => c.tier === "Gold").length,
+    silver: customers.filter((c) => c.tier === "Silver").length,
+    noMembership: customers.filter((c) => c.tier === "No Membership").length,
     totalPoints: customers.reduce((sum, c) => sum + c.loyaltyPoints, 0),
   };
 
@@ -170,7 +172,7 @@ export default function Customers() {
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <Users className="h-8 w-8 text-primary" />
@@ -195,6 +197,24 @@ export default function Customers() {
               <div>
                 <p className="text-2xl font-bold">{stats.gold}</p>
                 <p className="text-sm text-muted-foreground">Gold Members</p>
+              </div>
+            </div>
+          </Card>
+          <Card className="p-4 bg-gray-50 dark:bg-gray-950/20">
+            <div className="flex items-center gap-3">
+              <Star className="h-8 w-8 text-gray-600" />
+              <div>
+                <p className="text-2xl font-bold">{stats.silver}</p>
+                <p className="text-sm text-muted-foreground">Silver Members</p>
+              </div>
+            </div>
+          </Card>
+          <Card className="p-4 bg-slate-50 dark:bg-slate-950/20">
+            <div className="flex items-center gap-3">
+              <Users className="h-8 w-8 text-slate-500" />
+              <div>
+                <p className="text-2xl font-bold">{stats.noMembership}</p>
+                <p className="text-sm text-muted-foreground">No Membership</p>
               </div>
             </div>
           </Card>
