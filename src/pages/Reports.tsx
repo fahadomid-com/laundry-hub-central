@@ -256,6 +256,109 @@ export default function Reports() {
                 </div>
               </Card>
             </div>
+
+            {/* Sales Performance Analysis */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">Sales Performance Analysis</h3>
+                <Button variant="outline" size="sm" onClick={() => handleExportReport("Sales Performance")}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Export
+                </Button>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { label: "Daily Average", value: "KD 415", change: 8.3, trend: "up" },
+                  { label: "Weekly Total", value: "KD 2,905", change: 12.1, trend: "up" },
+                  { label: "Monthly Target", value: "85%", change: 5.2, trend: "up" },
+                  { label: "Conversion Rate", value: "42%", change: -2.4, trend: "down" },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-lg border border-border p-4">
+                    <p className="text-sm text-muted-foreground">{item.label}</p>
+                    <p className="text-xl font-bold mt-1">{item.value}</p>
+                    <div className={`flex items-center text-sm mt-2 ${item.trend === "up" ? "text-green-600" : "text-red-600"}`}>
+                      {item.trend === "up" ? (
+                        <ArrowUpRight className="mr-1 h-3 w-3" />
+                      ) : (
+                        <ArrowDownRight className="mr-1 h-3 w-3" />
+                      )}
+                      {item.change > 0 ? "+" : ""}{item.change}%
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                {[
+                  { period: "Morning (6AM-12PM)", orders: 89, revenue: "KD 2,670" },
+                  { period: "Afternoon (12PM-6PM)", orders: 156, revenue: "KD 4,680" },
+                  { period: "Evening (6PM-10PM)", orders: 97, revenue: "KD 2,910" },
+                ].map((item) => (
+                  <div key={item.period} className="rounded-lg bg-muted/50 p-4">
+                    <p className="text-sm font-medium">{item.period}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-muted-foreground">{item.orders} orders</span>
+                      <span className="font-bold text-primary">{item.revenue}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Customer Spend Analysis */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">Customer Spend Analysis</h3>
+                <Button variant="outline" size="sm" onClick={() => handleExportReport("Customer Spend")}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Export
+                </Button>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  { label: "Avg Order Value", value: "KD 36.40", change: 4.5, trend: "up" },
+                  { label: "Avg Monthly Spend", value: "KD 145.60", change: 7.2, trend: "up" },
+                  { label: "Top Spender", value: "KD 892", change: 15.3, trend: "up" },
+                  { label: "Lifetime Value", value: "KD 1,240", change: 3.8, trend: "up" },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-lg border border-border p-4">
+                    <p className="text-sm text-muted-foreground">{item.label}</p>
+                    <p className="text-xl font-bold mt-1">{item.value}</p>
+                    <div className={`flex items-center text-sm mt-2 ${item.trend === "up" ? "text-green-600" : "text-red-600"}`}>
+                      {item.trend === "up" ? (
+                        <ArrowUpRight className="mr-1 h-3 w-3" />
+                      ) : (
+                        <ArrowDownRight className="mr-1 h-3 w-3" />
+                      )}
+                      {item.change > 0 ? "+" : ""}{item.change}%
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4">
+                <h4 className="text-sm font-medium mb-3">Spend Distribution by Tier</h4>
+                <div className="space-y-3">
+                  {[
+                    { tier: "Platinum", avgSpend: "KD 350", percentage: 85, color: "bg-purple-500" },
+                    { tier: "Gold", avgSpend: "KD 180", percentage: 65, color: "bg-yellow-500" },
+                    { tier: "Silver", avgSpend: "KD 95", percentage: 40, color: "bg-gray-400" },
+                    { tier: "No Membership", avgSpend: "KD 42", percentage: 20, color: "bg-gray-300" },
+                  ].map((item) => (
+                    <div key={item.tier}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm">{item.tier}</span>
+                        <span className="text-sm font-medium">{item.avgSpend} avg</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-muted">
+                        <div
+                          className={`h-2 rounded-full ${item.color}`}
+                          style={{ width: `${item.percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
           </TabsContent>
 
           <TabsContent value="customers" className="space-y-4">
