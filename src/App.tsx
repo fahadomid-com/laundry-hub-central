@@ -9,6 +9,14 @@ import Auth from "./pages/Auth";
 import Operations from "./pages/Operations";
 import Orders from "./pages/Orders";
 import POS from "./pages/POS";
+import Catalog from "./pages/Catalog";
+import Customers from "./pages/Customers";
+import Drivers from "./pages/Drivers";
+import Finance from "./pages/Finance";
+import Reports from "./pages/Reports";
+import AISupport from "./pages/AISupport";
+import Marketing from "./pages/Marketing";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -65,6 +73,70 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <POS />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/catalog"
+        element={
+          <ProtectedRoute>
+            <Catalog />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customers"
+        element={
+          <ProtectedRoute>
+            <Customers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/drivers"
+        element={
+          <ProtectedRoute>
+            <Drivers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/finance"
+        element={
+          <ProtectedRoute>
+            <Finance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ai-support"
+        element={
+          <ProtectedRoute>
+            <AISupport />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/marketing"
+        element={
+          <ProtectedRoute>
+            <Marketing />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         }
       />
