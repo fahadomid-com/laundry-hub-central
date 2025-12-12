@@ -106,12 +106,17 @@ export default function SettingsPage() {
   const [selectedRole, setSelectedRole] = useState<"Admin" | "Employee">("Admin");
   const [permissions, setPermissions] = useState(initialPermissions);
   const [addUserOpen, setAddUserOpen] = useState(false);
+  const [editUser, setEditUser] = useState<User | null>(null);
   const [roles, setRoles] = useState(["Admin", "Employee"]);
   const [branches, setBranches] = useState(["All Branches", "Salmiya", "City", "Hawally", "Farwaniya"]);
   const [showCustomRole, setShowCustomRole] = useState(false);
   const [customRole, setCustomRole] = useState("");
   const [showCustomBranch, setShowCustomBranch] = useState(false);
   const [customBranch, setCustomBranch] = useState("");
+  const [showEditCustomRole, setShowEditCustomRole] = useState(false);
+  const [editCustomRole, setEditCustomRole] = useState("");
+  const [showEditCustomBranch, setShowEditCustomBranch] = useState(false);
+  const [editCustomBranch, setEditCustomBranch] = useState("");
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -147,6 +152,19 @@ export default function SettingsPage() {
   const handleDeleteUser = (userId: string) => {
     setUsers((prev) => prev.filter((u) => u.id !== userId));
     toast({ title: "User deleted", description: "User has been removed" });
+  };
+
+  const handleEditUser = (user: User) => {
+    setEditUser(user);
+  };
+
+  const handleUpdateUser = () => {
+    if (!editUser) return;
+    setUsers((prev) => prev.map((u) => (u.id === editUser.id ? editUser : u)));
+    setEditUser(null);
+    setShowEditCustomRole(false);
+    setShowEditCustomBranch(false);
+    toast({ title: "User updated", description: `${editUser.name} has been updated` });
   };
 
   const handlePermissionChange = (
@@ -265,7 +283,7 @@ export default function SettingsPage() {
                         <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">{user.deviceType}</td>
                         <td className="whitespace-nowrap px-4 py-3 text-right">
                           <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEditUser(user)}>
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button
@@ -545,6 +563,152 @@ export default function SettingsPage() {
               Cancel
             </Button>
             <Button onClick={handleAddUser}>Add User</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit User Dialog */}
+      <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
+        <DialogContent className="bg-card">
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+          </DialogHeader>
+          {editUser && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Full Name</Label>
+                <Input
+                  value={editUser.name}
+                  onChange={(e) => setEditUser((p) => p ? { ...p, name: e.target.value } : null)}
+                  placeholder="Enter name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={editUser.email}
+                  onChange={(e) => setEditUser((p) => p ? { ...p, email: e.target.value } : null)}
+                  placeholder="Enter email"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Mobile</Label>
+                <Input
+                  value={editUser.mobile}
+                  onChange={(e) => setEditUser((p) => p ? { ...p, mobile: e.target.value } : null)}
+                  placeholder="+965 XXXX XXXX"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Role</Label>
+                  {showEditCustomRole ? (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter custom role"
+                        value={editCustomRole}
+                        onChange={(e) => setEditCustomRole(e.target.value)}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          if (editCustomRole.trim()) {
+                            setRoles((prev) => [...prev, editCustomRole.trim()]);
+                            setEditUser((p) => p ? { ...p, role: editCustomRole.trim() } : null);
+                            setShowEditCustomRole(false);
+                            setEditCustomRole("");
+                          }
+                        }}
+                      >
+                        Done
+                      </Button>
+                    </div>
+                  ) : (
+                    <Select
+                      value={editUser.role}
+                      onValueChange={(v) => {
+                        if (v === "__add_role__") {
+                          setShowEditCustomRole(true);
+                        } else {
+                          setEditUser((p) => p ? { ...p, role: v } : null);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="bg-background">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        {roles.map((role) => (
+                          <SelectItem key={role} value={role}>
+                            {role}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value="__add_role__" className="text-primary font-medium">
+                          + Add Extra Role
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label>Branch</Label>
+                  {showEditCustomBranch ? (
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter branch name"
+                        value={editCustomBranch}
+                        onChange={(e) => setEditCustomBranch(e.target.value)}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          if (editCustomBranch.trim()) {
+                            setBranches((prev) => [...prev, editCustomBranch.trim()]);
+                            setEditUser((p) => p ? { ...p, branch: editCustomBranch.trim() } : null);
+                            setShowEditCustomBranch(false);
+                            setEditCustomBranch("");
+                          }
+                        }}
+                      >
+                        Done
+                      </Button>
+                    </div>
+                  ) : (
+                    <Select
+                      value={editUser.branch}
+                      onValueChange={(v) => {
+                        if (v === "__add_branch__") {
+                          setShowEditCustomBranch(true);
+                        } else {
+                          setEditUser((p) => p ? { ...p, branch: v } : null);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="bg-background">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        {branches.map((branch) => (
+                          <SelectItem key={branch} value={branch}>
+                            {branch}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value="__add_branch__" className="text-primary font-medium">
+                          + Add Branch
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditUser(null)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateUser}>Save Changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
