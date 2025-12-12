@@ -11,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -75,9 +77,44 @@ export default function Staff() {
   const [staff, setStaff] = useState<Staff[]>(initialStaff);
   const [roleFilter, setRoleFilter] = useState("all");
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [selectedTask, setSelectedTask] = useState("");
+  const [newStaff, setNewStaff] = useState({
+    name: "",
+    role: "" as Staff["role"] | "",
+    shift: "",
+    phone: "",
+  });
   const { toast } = useToast();
+
+  const shiftOptions = [
+    "6AM - 2PM",
+    "8AM - 4PM",
+    "9AM - 5PM",
+    "10AM - 6PM",
+    "12PM - 8PM",
+    "2PM - 10PM",
+  ];
+
+  const handleAddStaff = () => {
+    if (!newStaff.name || !newStaff.role || !newStaff.shift) {
+      toast({ title: "Missing fields", description: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+    const staffMember: Staff = {
+      id: String(Date.now()),
+      name: newStaff.name,
+      role: newStaff.role as Staff["role"],
+      status: "Available",
+      shift: newStaff.shift,
+      tasksCompleted: 0,
+    };
+    setStaff((prev) => [...prev, staffMember]);
+    setNewStaff({ name: "", role: "", shift: "", phone: "" });
+    setAddDialogOpen(false);
+    toast({ title: "Staff added", description: `${staffMember.name} has been added as ${staffMember.role}` });
+  };
 
   const filteredStaff = staff.filter((s) => {
     return roleFilter === "all" || s.role === roleFilter;
@@ -147,7 +184,7 @@ export default function Staff() {
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Staff</h1>
             <p className="mt-1 text-muted-foreground">Manage staff members and assignments</p>
           </div>
-          <Button>
+          <Button onClick={() => setAddDialogOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Staff
           </Button>
@@ -294,6 +331,75 @@ export default function Staff() {
             </Button>
             <Button onClick={handleAssignTask} disabled={!selectedTask}>
               Assign
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Staff Dialog */}
+      <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+        <DialogContent className="bg-card">
+          <DialogHeader>
+            <DialogTitle>Add New Staff</DialogTitle>
+            <DialogDescription>
+              Add a new staff member to the team
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name *</Label>
+              <Input
+                id="name"
+                placeholder="Enter full name"
+                value={newStaff.name}
+                onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                placeholder="+965 XXXX XXXX"
+                value={newStaff.phone}
+                onChange={(e) => setNewStaff({ ...newStaff, phone: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Role *</Label>
+              <Select value={newStaff.role} onValueChange={(value) => setNewStaff({ ...newStaff, role: value as Staff["role"] })}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="Washer">Washer</SelectItem>
+                  <SelectItem value="Driver">Driver</SelectItem>
+                  <SelectItem value="Ironer">Ironer</SelectItem>
+                  <SelectItem value="Manager">Manager</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Shift *</Label>
+              <Select value={newStaff.shift} onValueChange={(value) => setNewStaff({ ...newStaff, shift: value })}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select shift" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  {shiftOptions.map((shift) => (
+                    <SelectItem key={shift} value={shift}>
+                      {shift}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddStaff}>
+              Add Staff
             </Button>
           </DialogFooter>
         </DialogContent>
