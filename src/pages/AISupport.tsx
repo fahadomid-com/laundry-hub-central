@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -28,6 +31,8 @@ import {
   HelpCircle,
   ThumbsUp,
   ThumbsDown,
+  Save,
+  Key,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -85,6 +90,28 @@ export default function AISupport() {
   const [ticketFilter, setTicketFilter] = useState("all");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Bot Configuration State
+  const [systemPrompt, setSystemPrompt] = useState(
+    "You are a helpful AI customer support assistant for a laundry service business. Be friendly, professional, and provide accurate information about services, pricing, and order status."
+  );
+  const [botInstructions, setBotInstructions] = useState(
+    "1. Always greet customers warmly\n2. Provide accurate pricing information\n3. Help track orders and deliveries\n4. Escalate complex issues to human agents\n5. Maintain a professional and helpful tone\n6. Offer relevant upsells when appropriate"
+  );
+  const [aiProvider, setAiProvider] = useState("openai");
+  const [openaiApiKey, setOpenaiApiKey] = useState("");
+  const [googleApiKey, setGoogleApiKey] = useState("");
+  const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
+  const [enableStreaming, setEnableStreaming] = useState(true);
+  const [maxTokens, setMaxTokens] = useState("2048");
+  const [temperature, setTemperature] = useState("0.7");
+
+  const handleSaveConfig = () => {
+    toast({
+      title: "Configuration Saved",
+      description: "Bot settings have been updated successfully.",
+    });
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -235,6 +262,10 @@ export default function AISupport() {
             <TabsTrigger value="tickets">
               <MessageSquare className="mr-2 h-4 w-4" />
               Support Tickets
+            </TabsTrigger>
+            <TabsTrigger value="configure">
+              <Settings className="mr-2 h-4 w-4" />
+              Configure Bot
             </TabsTrigger>
           </TabsList>
 
@@ -423,6 +454,184 @@ export default function AISupport() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="configure" className="space-y-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* System Prompt */}
+              <Card className="p-6">
+                <h3 className="font-semibold flex items-center gap-2 mb-4">
+                  <Bot className="h-5 w-5 text-primary" />
+                  System Prompt
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Define the AI's personality and base behavior. This prompt sets the context for all conversations.
+                </p>
+                <Textarea
+                  value={systemPrompt}
+                  onChange={(e) => setSystemPrompt(e.target.value)}
+                  placeholder="Enter system prompt..."
+                  className="min-h-[200px]"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {systemPrompt.length} characters
+                </p>
+              </Card>
+
+              {/* Bot Instructions */}
+              <Card className="p-6">
+                <h3 className="font-semibold flex items-center gap-2 mb-4">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Bot Instructions
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Specific guidelines and rules for the bot to follow during conversations.
+                </p>
+                <Textarea
+                  value={botInstructions}
+                  onChange={(e) => setBotInstructions(e.target.value)}
+                  placeholder="Enter bot instructions..."
+                  className="min-h-[200px]"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  {botInstructions.split('\n').length} instructions
+                </p>
+              </Card>
+            </div>
+
+            {/* API Configuration */}
+            <Card className="p-6">
+              <h3 className="font-semibold flex items-center gap-2 mb-4">
+                <Key className="h-5 w-5 text-primary" />
+                API Configuration
+              </h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Configure your AI provider credentials and model settings.
+              </p>
+
+              <div className="grid gap-6 lg:grid-cols-2">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>AI Provider</Label>
+                    <Select value={aiProvider} onValueChange={setAiProvider}>
+                      <SelectTrigger className="bg-background">
+                        <SelectValue placeholder="Select provider" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        <SelectItem value="openai">OpenAI</SelectItem>
+                        <SelectItem value="google">Google AI (Gemini)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {aiProvider === "openai" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label>OpenAI API Key</Label>
+                        <Input
+                          type="password"
+                          value={openaiApiKey}
+                          onChange={(e) => setOpenaiApiKey(e.target.value)}
+                          placeholder="sk-..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Model</Label>
+                        <Select value={selectedModel} onValueChange={setSelectedModel}>
+                          <SelectTrigger className="bg-background">
+                            <SelectValue placeholder="Select model" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-popover">
+                            <SelectItem value="gpt-4o">GPT-4o</SelectItem>
+                            <SelectItem value="gpt-4o-mini">GPT-4o Mini</SelectItem>
+                            <SelectItem value="gpt-4-turbo">GPT-4 Turbo</SelectItem>
+                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+
+                  {aiProvider === "google" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label>Google AI API Key</Label>
+                        <Input
+                          type="password"
+                          value={googleApiKey}
+                          onChange={(e) => setGoogleApiKey(e.target.value)}
+                          placeholder="AIza..."
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Model</Label>
+                        <Select value={selectedModel} onValueChange={setSelectedModel}>
+                          <SelectTrigger className="bg-background">
+                            <SelectValue placeholder="Select model" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-popover">
+                            <SelectItem value="gemini-2.0-flash">Gemini 2.0 Flash</SelectItem>
+                            <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
+                            <SelectItem value="gemini-1.5-flash">Gemini 1.5 Flash</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Max Tokens</Label>
+                    <Input
+                      type="number"
+                      value={maxTokens}
+                      onChange={(e) => setMaxTokens(e.target.value)}
+                      placeholder="2048"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Maximum response length (1-4096)
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Temperature</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="2"
+                      value={temperature}
+                      onChange={(e) => setTemperature(e.target.value)}
+                      placeholder="0.7"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Creativity level (0 = focused, 2 = creative)
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between rounded-lg border border-border p-4">
+                    <div>
+                      <Label>Enable Streaming</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Stream responses in real-time
+                      </p>
+                    </div>
+                    <Switch
+                      checked={enableStreaming}
+                      onCheckedChange={setEnableStreaming}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <Button onClick={handleSaveConfig}>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Configuration
+                </Button>
               </div>
             </Card>
           </TabsContent>
