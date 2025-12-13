@@ -44,7 +44,7 @@ interface Staff {
   id: string;
   name: string;
   role: string;
-  status: "Available" | "Busy" | "On Break";
+  status: "Available" | "Busy" | "On Holiday";
   shift: string;
   currentTask?: string;
   tasksCompleted: number;
@@ -56,7 +56,7 @@ const initialStaff: Staff[] = [
   { id: "1", name: "Ahmed Hassan", role: "Washer", status: "Busy", shift: "9AM - 5PM", currentTask: "Processing ORD-001", tasksCompleted: 12 },
   { id: "2", name: "Mohammed Ali", role: "Driver", status: "Busy", shift: "8AM - 4PM", currentTask: "Delivery to Salmiya", tasksCompleted: 8 },
   { id: "3", name: "Fatima Omar", role: "Ironer", status: "Available", shift: "10AM - 6PM", tasksCompleted: 15 },
-  { id: "4", name: "Hassan Khalid", role: "Driver", status: "On Break", shift: "9AM - 5PM", tasksCompleted: 6 },
+  { id: "4", name: "Hassan Khalid", role: "Driver", status: "On Holiday", shift: "9AM - 5PM", tasksCompleted: 6 },
   { id: "5", name: "Sara Ahmad", role: "Washer", status: "Available", shift: "8AM - 4PM", tasksCompleted: 10 },
   { id: "6", name: "Ali Mahmoud", role: "Manager", status: "Busy", shift: "8AM - 6PM", currentTask: "Supervising floor", tasksCompleted: 0 },
 ];
@@ -75,7 +75,7 @@ const getRoleColor = (role: string) => {
 const statusConfig = {
   Available: { color: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400", icon: CheckCircle },
   Busy: { color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400", icon: Clock },
-  "On Break": { color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", icon: Coffee },
+  "On Holiday": { color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", icon: Coffee },
 };
 
 const tasks = [
@@ -176,7 +176,7 @@ export default function Staff() {
     total: staff.length,
     available: staff.filter((s) => s.status === "Available").length,
     busy: staff.filter((s) => s.status === "Busy").length,
-    onBreak: staff.filter((s) => s.status === "On Break").length,
+    onHoliday: staff.filter((s) => s.status === "On Holiday").length,
   };
 
   const handleCompleteTask = (staffMember: Staff) => {
@@ -205,22 +205,22 @@ export default function Staff() {
     setSelectedTask("");
   };
 
-  const handleSetBreak = (staffMember: Staff) => {
+  const handleSetHoliday = (staffMember: Staff) => {
     setStaff((prev) =>
       prev.map((s) =>
-        s.id === staffMember.id ? { ...s, status: "On Break" as const } : s
+        s.id === staffMember.id ? { ...s, status: "On Holiday" as const } : s
       )
     );
-    toast({ title: "Break Started", description: `${staffMember.name} is now on break` });
+    toast({ title: "Holiday Started", description: `${staffMember.name} is now on holiday` });
   };
 
-  const handleEndBreak = (staffMember: Staff) => {
+  const handleEndHoliday = (staffMember: Staff) => {
     setStaff((prev) =>
       prev.map((s) =>
         s.id === staffMember.id ? { ...s, status: "Available" as const } : s
       )
     );
-    toast({ title: "Break Ended", description: `${staffMember.name} is now available` });
+    toast({ title: "Holiday Ended", description: `${staffMember.name} is now available` });
   };
 
   const openAssignDialog = (staffMember: Staff) => {
@@ -278,8 +278,8 @@ export default function Staff() {
             <p className="text-3xl font-bold mt-1 text-yellow-600">{stats.busy}</p>
           </Card>
           <Card className="p-4 bg-orange-50 dark:bg-orange-950/20">
-            <p className="text-sm text-muted-foreground">On Break</p>
-            <p className="text-3xl font-bold mt-1 text-orange-600">{stats.onBreak}</p>
+            <p className="text-sm text-muted-foreground">On Holiday</p>
+            <p className="text-3xl font-bold mt-1 text-orange-600">{stats.onHoliday}</p>
           </Card>
         </div>
 
@@ -378,15 +378,15 @@ export default function Staff() {
                           <Plus className="mr-1 h-3 w-3" />
                           Assign Task
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => handleSetBreak(member)}>
+                        <Button size="sm" variant="outline" onClick={() => handleSetHoliday(member)}>
                           <Coffee className="mr-1 h-3 w-3" />
-                          Break
+                          Holiday
                         </Button>
                       </>
                     )}
-                    {member.status === "On Break" && (
-                      <Button size="sm" onClick={() => handleEndBreak(member)}>
-                        End Break
+                    {member.status === "On Holiday" && (
+                      <Button size="sm" onClick={() => handleEndHoliday(member)}>
+                        End Holiday
                       </Button>
                     )}
                   </div>
@@ -610,7 +610,7 @@ export default function Staff() {
                   <SelectContent className="bg-popover">
                     <SelectItem value="Available">Available</SelectItem>
                     <SelectItem value="Busy">Busy</SelectItem>
-                    <SelectItem value="On Break">On Break</SelectItem>
+                    <SelectItem value="On Holiday">On Holiday</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
