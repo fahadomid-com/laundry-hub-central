@@ -39,6 +39,10 @@ import {
   FileSpreadsheet,
   Link,
   X,
+  Database,
+  FileText,
+  Image,
+  File,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -91,6 +95,95 @@ export default function Reports() {
   const [enableStreaming, setEnableStreaming] = useState(true);
   const [maxTokens, setMaxTokens] = useState("2048");
   const [temperature, setTemperature] = useState("0.7");
+
+  // Knowledge Base State
+  interface KnowledgeFile {
+    id: string;
+    name: string;
+    type: string;
+    size: string;
+    uploadedAt: string;
+  }
+  const [knowledgeFiles, setKnowledgeFiles] = useState<KnowledgeFile[]>([
+    { id: "1", name: "Business Metrics Guide.pdf", type: "pdf", size: "1.8 MB", uploadedAt: "Dec 10, 2025" },
+    { id: "2", name: "Historical Data.csv", type: "csv", size: "420 KB", uploadedAt: "Dec 8, 2025" },
+  ]);
+  const knowledgeFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleKnowledgeFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+    
+    const allowedTypes = [
+      "application/pdf",
+      "image/png",
+      "image/jpeg",
+      "image/gif",
+      "image/webp",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "text/csv",
+    ];
+    
+    Array.from(files).forEach((file) => {
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: `${file.name} is not a supported file type.`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      const fileType = file.type.includes("pdf") ? "pdf" 
+        : file.type.includes("image") ? "image"
+        : file.type.includes("word") || file.type.includes("document") ? "word"
+        : "csv";
+      
+      const newFile: KnowledgeFile = {
+        id: String(Date.now() + Math.random()),
+        name: file.name,
+        type: fileType,
+        size: file.size < 1024 * 1024 
+          ? `${(file.size / 1024).toFixed(1)} KB`
+          : `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        uploadedAt: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      };
+      
+      setKnowledgeFiles((prev) => [...prev, newFile]);
+      toast({
+        title: "File uploaded",
+        description: `${file.name} has been added to knowledge base.`,
+      });
+    });
+    
+    if (knowledgeFileInputRef.current) {
+      knowledgeFileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveKnowledgeFile = (fileId: string) => {
+    setKnowledgeFiles((prev) => prev.filter((f) => f.id !== fileId));
+    toast({
+      title: "File removed",
+      description: "File has been removed from knowledge base.",
+    });
+  };
+
+  const getKnowledgeFileIcon = (type: string) => {
+    switch (type) {
+      case "pdf":
+        return <FileText className="h-4 w-4 text-red-500" />;
+      case "image":
+        return <Image className="h-4 w-4 text-blue-500" />;
+      case "word":
+        return <FileText className="h-4 w-4 text-blue-600" />;
+      case "csv":
+        return <File className="h-4 w-4 text-green-500" />;
+      default:
+        return <File className="h-4 w-4 text-muted-foreground" />;
+    }
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -716,6 +809,73 @@ export default function Reports() {
                   Save Configuration
                 </Button>
               </div>
+            </Card>
+
+            {/* Knowledge Base */}
+            <Card className="p-6">
+              <h3 className="font-semibold flex items-center gap-2 mb-4">
+                <Database className="h-5 w-5 text-primary" />
+                Knowledge Base
+              </h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Upload documents to enhance AI analytics with your business-specific knowledge. Supported formats: PDF, Images, Word documents, and CSV files.
+              </p>
+
+              {/* Upload Area */}
+              <div
+                className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                onClick={() => knowledgeFileInputRef.current?.click()}
+              >
+                <input
+                  ref={knowledgeFileInputRef}
+                  type="file"
+                  multiple
+                  accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.csv"
+                  className="hidden"
+                  onChange={handleKnowledgeFileUpload}
+                />
+                <Upload className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+                <p className="font-medium">Click to upload or drag and drop</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  PDF, Images (PNG, JPG), Word (.doc, .docx), CSV
+                </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Maximum file size: 10MB
+                </p>
+              </div>
+
+              {/* Uploaded Files List */}
+              {knowledgeFiles.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="text-sm font-medium mb-3">Uploaded Files ({knowledgeFiles.length})</h4>
+                  <div className="space-y-2">
+                    {knowledgeFiles.map((file) => (
+                      <div
+                        key={file.id}
+                        className="flex items-center justify-between rounded-lg border border-border p-3 bg-muted/30"
+                      >
+                        <div className="flex items-center gap-3">
+                          {getKnowledgeFileIcon(file.type)}
+                          <div>
+                            <p className="text-sm font-medium">{file.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {file.size} • Uploaded {file.uploadedAt}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveKnowledgeFile(file.id)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </Card>
           </TabsContent>
         </Tabs>
