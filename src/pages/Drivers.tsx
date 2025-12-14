@@ -796,17 +796,6 @@ export default function Drivers() {
                 </Card>
               </div>
 
-              <Card className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">Performance Rating</span>
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                    <span className="font-bold">{viewDriver.rating.toFixed(1)}</span>
-                  </div>
-                </div>
-                <Progress value={viewDriver.rating * 20} className="h-2" />
-              </Card>
-
               <div className="space-y-3">
                 <h4 className="font-medium">Vehicle Information</h4>
                 <div className="space-y-2 text-sm">
