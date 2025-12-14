@@ -248,6 +248,12 @@ const Branches = () => {
     phone: "",
   });
 
+  const [newBranchEmployees, setNewBranchEmployees] = useState<Array<{ name: string; role: string; email: string; phone: string }>>([]);
+  const [newEmployeeForm, setNewEmployeeForm] = useState({ name: "", role: "", email: "", phone: "" });
+  
+  const [editBranchEmployees, setEditBranchEmployees] = useState<Array<{ name: string; role: string; email: string; phone: string }>>([]);
+  const [editEmployeeForm, setEditEmployeeForm] = useState({ name: "", role: "", email: "", phone: "" });
+
   const filteredBranches = branches.filter(
     (branch) =>
       branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -288,7 +294,23 @@ const Branches = () => {
       createdAt: new Date().toISOString().split("T")[0],
     };
     setBranches([...branches, branch]);
+    
+    // Add employees to the new branch
+    if (newBranchEmployees.length > 0) {
+      const newStaffMembers: Staff[] = newBranchEmployees.map((emp, index) => ({
+        id: `${Date.now()}-${index}`,
+        name: emp.name,
+        role: emp.role,
+        email: emp.email,
+        phone: emp.phone,
+        branchId: branch.id,
+      }));
+      setStaff([...staff, ...newStaffMembers]);
+    }
+    
     setNewBranch({ name: "", code: "", address: "", city: "", phone: "", email: "", manager: "", openingHours: "", status: "active" });
+    setNewBranchEmployees([]);
+    setNewEmployeeForm({ name: "", role: "", email: "", phone: "" });
     setIsAddDialogOpen(false);
     toast({ title: "Branch added", description: `${branch.name} has been created successfully` });
   };
@@ -296,8 +318,24 @@ const Branches = () => {
   const handleEditBranch = () => {
     if (!editingBranch) return;
     setBranches(branches.map((b) => (b.id === editingBranch.id ? editingBranch : b)));
+    
+    // Add new employees to the branch
+    if (editBranchEmployees.length > 0) {
+      const newStaffMembers: Staff[] = editBranchEmployees.map((emp, index) => ({
+        id: `${Date.now()}-${index}`,
+        name: emp.name,
+        role: emp.role,
+        email: emp.email,
+        phone: emp.phone,
+        branchId: editingBranch.id,
+      }));
+      setStaff([...staff, ...newStaffMembers]);
+    }
+    
     setIsEditDialogOpen(false);
     setEditingBranch(null);
+    setEditBranchEmployees([]);
+    setEditEmployeeForm({ name: "", role: "", email: "", phone: "" });
     toast({ title: "Branch updated", description: "Branch details have been updated" });
   };
 
@@ -453,6 +491,81 @@ const Branches = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                {/* Add Employees Section */}
+                <div className="space-y-3 border-t pt-4">
+                  <Label className="text-base font-medium">Employees</Label>
+                  
+                  {newBranchEmployees.length > 0 && (
+                    <div className="space-y-2">
+                      {newBranchEmployees.map((emp, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 rounded-lg border bg-muted/50">
+                          <div>
+                            <p className="font-medium text-sm">{emp.name}</p>
+                            <p className="text-xs text-muted-foreground">{emp.role}</p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setNewBranchEmployees(newBranchEmployees.filter((_, i) => i !== index))}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      placeholder="Employee Name"
+                      value={newEmployeeForm.name}
+                      onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, name: e.target.value })}
+                    />
+                    <Select
+                      value={newEmployeeForm.role}
+                      onValueChange={(value) => setNewEmployeeForm({ ...newEmployeeForm, role: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Manager">Manager</SelectItem>
+                        <SelectItem value="Cashier">Cashier</SelectItem>
+                        <SelectItem value="Operator">Operator</SelectItem>
+                        <SelectItem value="Delivery">Delivery</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      placeholder="Email"
+                      value={newEmployeeForm.email}
+                      onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, email: e.target.value })}
+                    />
+                    <Input
+                      placeholder="Phone"
+                      value={newEmployeeForm.phone}
+                      onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, phone: e.target.value })}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      if (newEmployeeForm.name && newEmployeeForm.role) {
+                        setNewBranchEmployees([...newBranchEmployees, { ...newEmployeeForm }]);
+                        setNewEmployeeForm({ name: "", role: "", email: "", phone: "" });
+                      }
+                    }}
+                  >
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Add Employee
+                  </Button>
                 </div>
               </div>
               <DialogFooter>
@@ -703,6 +816,81 @@ const Branches = () => {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                {/* Add Employees Section */}
+                <div className="space-y-3 border-t pt-4">
+                  <Label className="text-base font-medium">Add New Employees</Label>
+                  
+                  {editBranchEmployees.length > 0 && (
+                    <div className="space-y-2">
+                      {editBranchEmployees.map((emp, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 rounded-lg border bg-muted/50">
+                          <div>
+                            <p className="font-medium text-sm">{emp.name}</p>
+                            <p className="text-xs text-muted-foreground">{emp.role}</p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setEditBranchEmployees(editBranchEmployees.filter((_, i) => i !== index))}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      placeholder="Employee Name"
+                      value={editEmployeeForm.name}
+                      onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, name: e.target.value })}
+                    />
+                    <Select
+                      value={editEmployeeForm.role}
+                      onValueChange={(value) => setEditEmployeeForm({ ...editEmployeeForm, role: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Manager">Manager</SelectItem>
+                        <SelectItem value="Cashier">Cashier</SelectItem>
+                        <SelectItem value="Operator">Operator</SelectItem>
+                        <SelectItem value="Delivery">Delivery</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      placeholder="Email"
+                      value={editEmployeeForm.email}
+                      onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, email: e.target.value })}
+                    />
+                    <Input
+                      placeholder="Phone"
+                      value={editEmployeeForm.phone}
+                      onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, phone: e.target.value })}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      if (editEmployeeForm.name && editEmployeeForm.role) {
+                        setEditBranchEmployees([...editBranchEmployees, { ...editEmployeeForm }]);
+                        setEditEmployeeForm({ name: "", role: "", email: "", phone: "" });
+                      }
+                    }}
+                  >
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Add Employee
+                  </Button>
                 </div>
               </div>
             )}
