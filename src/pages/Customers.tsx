@@ -48,7 +48,6 @@ import {
   Crown,
   Star,
   Gift,
-  MessageSquare,
   Download,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -141,9 +140,6 @@ export default function Customers() {
     toast({ title: "Customer deleted", description: `${customer?.name} has been removed` });
   };
 
-  const handleSendMessage = (customer: Customer) => {
-    toast({ title: "Message sent", description: `SMS sent to ${customer.phone}` });
-  };
 
   const handleRedeemPoints = (customer: Customer) => {
     toast({ title: "Points redeemed", description: `${customer.loyaltyPoints} points redeemed for ${customer.name}` });
@@ -455,16 +451,10 @@ export default function Customers() {
                 </div>
               )}
 
-              <div className="flex gap-2">
-                <Button className="flex-1" onClick={() => handleSendMessage(viewCustomer)}>
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Send Message
-                </Button>
-                <Button variant="outline" onClick={() => { setViewCustomer(null); setEditCustomer(viewCustomer); }}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </Button>
-              </div>
+              <Button className="w-full" variant="outline" onClick={() => { setViewCustomer(null); setEditCustomer(viewCustomer); }}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit Customer
+              </Button>
             </div>
           )}
         </SheetContent>
