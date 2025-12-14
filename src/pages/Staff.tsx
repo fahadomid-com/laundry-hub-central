@@ -37,6 +37,7 @@ import {
   MoreVertical,
   Edit,
   Trash2,
+  MapPin,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -44,6 +45,7 @@ interface Staff {
   id: string;
   name: string;
   role: string;
+  branch: string;
   status: "Available" | "Busy" | "On Holiday";
   shift: string;
   currentTask?: string;
@@ -52,13 +54,15 @@ interface Staff {
 
 const defaultRoles = ["Washer", "Driver", "Ironer", "Manager"];
 
+const defaultBranches = ["Salmiya", "Hawally", "Kuwait City", "Farwaniya", "Jabriya", "Mishref"];
+
 const initialStaff: Staff[] = [
-  { id: "1", name: "Ahmed Hassan", role: "Washer", status: "Busy", shift: "9AM - 5PM", currentTask: "Processing ORD-001", tasksCompleted: 12 },
-  { id: "2", name: "Mohammed Ali", role: "Driver", status: "Busy", shift: "8AM - 4PM", currentTask: "Delivery to Salmiya", tasksCompleted: 8 },
-  { id: "3", name: "Fatima Omar", role: "Ironer", status: "Available", shift: "10AM - 6PM", tasksCompleted: 15 },
-  { id: "4", name: "Hassan Khalid", role: "Driver", status: "On Holiday", shift: "9AM - 5PM", tasksCompleted: 6 },
-  { id: "5", name: "Sara Ahmad", role: "Washer", status: "Available", shift: "8AM - 4PM", tasksCompleted: 10 },
-  { id: "6", name: "Ali Mahmoud", role: "Manager", status: "Busy", shift: "8AM - 6PM", currentTask: "Supervising floor", tasksCompleted: 0 },
+  { id: "1", name: "Ahmed Hassan", role: "Washer", branch: "Salmiya", status: "Busy", shift: "9AM - 5PM", currentTask: "Processing ORD-001", tasksCompleted: 12 },
+  { id: "2", name: "Mohammed Ali", role: "Driver", branch: "Hawally", status: "Busy", shift: "8AM - 4PM", currentTask: "Delivery to Salmiya", tasksCompleted: 8 },
+  { id: "3", name: "Fatima Omar", role: "Ironer", branch: "Kuwait City", status: "Available", shift: "10AM - 6PM", tasksCompleted: 15 },
+  { id: "4", name: "Hassan Khalid", role: "Driver", branch: "Farwaniya", status: "On Holiday", shift: "9AM - 5PM", tasksCompleted: 6 },
+  { id: "5", name: "Sara Ahmad", role: "Washer", branch: "Salmiya", status: "Available", shift: "8AM - 4PM", tasksCompleted: 10 },
+  { id: "6", name: "Ali Mahmoud", role: "Manager", branch: "Jabriya", status: "Busy", shift: "8AM - 6PM", currentTask: "Supervising floor", tasksCompleted: 0 },
 ];
 
 const defaultRoleConfig: Record<string, { color: string }> = {
@@ -100,6 +104,7 @@ export default function Staff() {
   const [newStaff, setNewStaff] = useState({
     name: "",
     role: "",
+    branch: "",
     shift: "",
     phone: "",
     email: "",
@@ -168,7 +173,7 @@ export default function Staff() {
   };
 
   const handleAddStaff = () => {
-    if (!newStaff.name || !newStaff.role || !newStaff.shift) {
+    if (!newStaff.name || !newStaff.role || !newStaff.shift || !newStaff.branch) {
       toast({ title: "Missing fields", description: "Please fill in all required fields", variant: "destructive" });
       return;
     }
@@ -176,12 +181,13 @@ export default function Staff() {
       id: String(Date.now()),
       name: newStaff.name,
       role: newStaff.role,
+      branch: newStaff.branch,
       status: "Available",
       shift: newStaff.shift,
       tasksCompleted: 0,
     };
     setStaff((prev) => [...prev, staffMember]);
-    setNewStaff({ name: "", role: "", shift: "", phone: "", email: "", monthlySalary: "" });
+    setNewStaff({ name: "", role: "", branch: "", shift: "", phone: "", email: "", monthlySalary: "" });
     setAddDialogOpen(false);
     toast({ title: "Staff added", description: `${staffMember.name} has been added as ${staffMember.role}` });
   };
@@ -368,6 +374,10 @@ export default function Staff() {
 
                   <div className="mt-4 space-y-2 text-sm">
                     <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      {member.branch}
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
                       <Clock className="h-4 w-4" />
                       {member.shift}
                     </div>
@@ -549,6 +559,19 @@ export default function Staff() {
               )}
             </div>
             <div className="space-y-2">
+              <Label>Branch *</Label>
+              <Select value={newStaff.branch} onValueChange={(value) => setNewStaff({ ...newStaff, branch: value })}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select branch" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  {defaultBranches.map((branch) => (
+                    <SelectItem key={branch} value={branch}>{branch}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <Label>Shift *</Label>
               {showCustomShift ? (
                 <div className="flex gap-2">
@@ -637,6 +660,19 @@ export default function Staff() {
                   <SelectContent className="bg-popover">
                     {allRoles.map((role) => (
                       <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Branch *</Label>
+                <Select value={editStaff.branch} onValueChange={(value) => setEditStaff({ ...editStaff, branch: value })}>
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover">
+                    {defaultBranches.map((branch) => (
+                      <SelectItem key={branch} value={branch}>{branch}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
