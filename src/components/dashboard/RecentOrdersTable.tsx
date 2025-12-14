@@ -5,17 +5,17 @@ import { Car } from "lucide-react";
 interface Order {
   id: string;
   customer: string;
-  service: string;
+  location: string;
   status: "In Progress" | "Completed" | "Pending";
   amount: string;
   assignedDriver?: string;
 }
 
 const orders: Order[] = [
-  { id: "ORD-001", customer: "John Doe", service: "Dry Cleaning", status: "In Progress", amount: "KD45.50", assignedDriver: "Ahmed Hassan" },
-  { id: "ORD-002", customer: "Jane Smith", service: "Wash & Fold", status: "Completed", amount: "KD28.75", assignedDriver: "Mohammed Ali" },
-  { id: "ORD-003", customer: "Mike Johnson", service: "Alterations", status: "Pending", amount: "KD65.00" },
-  { id: "ORD-004", customer: "Sarah Wilson", service: "Express Wash", status: "In Progress", amount: "KD35.25", assignedDriver: "Khalid Omar" },
+  { id: "ORD-001", customer: "John Doe", location: "Salmiya", status: "In Progress", amount: "KD45.50", assignedDriver: "Ahmed Hassan" },
+  { id: "ORD-002", customer: "Jane Smith", location: "Hawally", status: "Completed", amount: "KD28.75", assignedDriver: "Mohammed Ali" },
+  { id: "ORD-003", customer: "Mike Johnson", location: "Kuwait City", status: "Pending", amount: "KD65.00" },
+  { id: "ORD-004", customer: "Sarah Wilson", location: "Farwaniya", status: "In Progress", amount: "KD35.25", assignedDriver: "Khalid Omar" },
 ];
 
 const statusVariantMap = {
@@ -44,7 +44,7 @@ export function RecentOrdersTable() {
                 Customer
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Service
+                Location
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Status
@@ -67,7 +67,7 @@ export function RecentOrdersTable() {
                   {order.customer}
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-sm text-muted-foreground">
-                  {order.service}
+                  {order.location}
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-sm">
                   <Badge variant={statusVariantMap[order.status]}>
