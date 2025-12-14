@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Package, Users, Car, UserCog, DollarSign, BarChart3, Bot, Megaphone, Settings, WashingMachine, Receipt } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Package, Users, Car, UserCog, DollarSign, BarChart3, Bot, Megaphone, Settings, WashingMachine, Receipt, Crown } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 const menuItems = [{
@@ -17,6 +17,10 @@ const menuItems = [{
   title: "Customers",
   icon: Users,
   url: "/customers"
+}, {
+  title: "Membership Tiers",
+  icon: Crown,
+  url: "/membership-tiers"
 }, {
   title: "Drivers",
   icon: Car,

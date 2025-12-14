@@ -18,6 +18,7 @@ import AISupport from "./pages/AISupport";
 import Expenses from "./pages/Expenses";
 import Marketing from "./pages/Marketing";
 import Settings from "./pages/Settings";
+import MembershipTiers from "./pages/MembershipTiers";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -146,6 +147,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Settings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/membership-tiers"
+        element={
+          <ProtectedRoute>
+            <MembershipTiers />
           </ProtectedRoute>
         }
       />
