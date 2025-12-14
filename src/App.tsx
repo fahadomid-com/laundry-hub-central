@@ -19,6 +19,7 @@ import Expenses from "./pages/Expenses";
 import Marketing from "./pages/Marketing";
 import Settings from "./pages/Settings";
 import MembershipTiers from "./pages/MembershipTiers";
+import Branches from "./pages/Branches";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -155,6 +156,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <MembershipTiers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/branches"
+        element={
+          <ProtectedRoute>
+            <Branches />
           </ProtectedRoute>
         }
       />
