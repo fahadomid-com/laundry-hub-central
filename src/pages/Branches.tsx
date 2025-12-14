@@ -277,9 +277,7 @@ const Branches = () => {
       const matchesRevenueFilter =
         revenueFilter === "all" ||
         revenueFilter === "most" ||
-        (revenueFilter === "0-2000" && stats.revenue <= 2000) ||
-        (revenueFilter === "2001-5000" && stats.revenue >= 2001 && stats.revenue <= 5000) ||
-        (revenueFilter === "5000+" && stats.revenue > 5000);
+        revenueFilter === "lowest";
 
       return matchesBranchFilter && matchesSearch && matchesCustomerFilter && matchesRevenueFilter;
     })
@@ -712,14 +710,12 @@ const Branches = () => {
           </Select>
           <Select value={revenueFilter} onValueChange={setRevenueFilter}>
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Branch Revenue" />
+              <SelectValue placeholder="Revenue" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Revenue</SelectItem>
-              <SelectItem value="most">Most Revenue First</SelectItem>
-              <SelectItem value="0-2000">0 - 2,000 KD per branch</SelectItem>
-              <SelectItem value="2001-5000">2,001 - 5,000 KD per branch</SelectItem>
-              <SelectItem value="5000+">5,000+ KD per branch</SelectItem>
+              <SelectItem value="most">Most Revenue</SelectItem>
+              <SelectItem value="lowest">Lowest Revenue</SelectItem>
             </SelectContent>
           </Select>
         </div>
