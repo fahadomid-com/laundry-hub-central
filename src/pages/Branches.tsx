@@ -120,73 +120,88 @@ interface BranchFinance {
 const initialBranches: Branch[] = [
   {
     id: "1",
-    name: "Downtown Branch",
-    code: "DT-001",
-    address: "123 Main Street",
-    city: "New York",
-    phone: "+1 234-567-8901",
-    email: "downtown@laundry.com",
-    manager: "John Smith",
+    name: "Salmiya Branch",
+    code: "SLM-001",
+    address: "Block 5, Salem Al-Mubarak Street",
+    city: "Salmiya",
+    phone: "+965 2222-1111",
+    email: "salmiya@laundry.com",
+    manager: "Ahmed Al-Rashid",
     status: "active",
     openingHours: "8:00 AM - 9:00 PM",
     createdAt: "2024-01-15",
   },
   {
     id: "2",
-    name: "Uptown Branch",
-    code: "UT-002",
-    address: "456 Oak Avenue",
-    city: "New York",
-    phone: "+1 234-567-8902",
-    email: "uptown@laundry.com",
-    manager: "Sarah Johnson",
+    name: "Bayan Branch",
+    code: "BYN-002",
+    address: "Block 8, Street 3",
+    city: "Bayan",
+    phone: "+965 2222-2222",
+    email: "bayan@laundry.com",
+    manager: "Fatima Al-Sabah",
     status: "active",
     openingHours: "7:00 AM - 10:00 PM",
     createdAt: "2024-02-20",
   },
   {
     id: "3",
-    name: "Mall Branch",
-    code: "ML-003",
-    address: "789 Shopping Center",
-    city: "Brooklyn",
-    phone: "+1 234-567-8903",
-    email: "mall@laundry.com",
-    manager: "Mike Davis",
-    status: "inactive",
+    name: "Mishref Branch",
+    code: "MSH-003",
+    address: "Block 1, Avenue 105",
+    city: "Mishref",
+    phone: "+965 2222-3333",
+    email: "mishref@laundry.com",
+    manager: "Khalid Al-Mutairi",
+    status: "active",
     openingHours: "10:00 AM - 8:00 PM",
     createdAt: "2024-03-10",
+  },
+  {
+    id: "4",
+    name: "Yarmouk Branch",
+    code: "YRM-004",
+    address: "Block 3, Street 12",
+    city: "Yarmouk",
+    phone: "+965 2222-4444",
+    email: "yarmouk@laundry.com",
+    manager: "Noura Al-Fahad",
+    status: "inactive",
+    openingHours: "9:00 AM - 9:00 PM",
+    createdAt: "2024-04-05",
   },
 ];
 
 const initialStaff: Staff[] = [
-  { id: "1", name: "John Smith", role: "Manager", email: "john@laundry.com", phone: "+1 234-567-0001", branchId: "1" },
-  { id: "2", name: "Emily Brown", role: "Cashier", email: "emily@laundry.com", phone: "+1 234-567-0002", branchId: "1" },
-  { id: "3", name: "Sarah Johnson", role: "Manager", email: "sarah@laundry.com", phone: "+1 234-567-0003", branchId: "2" },
-  { id: "4", name: "Tom Wilson", role: "Operator", email: "tom@laundry.com", phone: "+1 234-567-0004", branchId: "2" },
-  { id: "5", name: "Mike Davis", role: "Manager", email: "mike@laundry.com", phone: "+1 234-567-0005", branchId: "3" },
+  { id: "1", name: "Ahmed Al-Rashid", role: "Manager", email: "ahmed@laundry.com", phone: "+965 5555-0001", branchId: "1" },
+  { id: "2", name: "Sara Al-Kandari", role: "Cashier", email: "sara@laundry.com", phone: "+965 5555-0002", branchId: "1" },
+  { id: "3", name: "Fatima Al-Sabah", role: "Manager", email: "fatima@laundry.com", phone: "+965 5555-0003", branchId: "2" },
+  { id: "4", name: "Omar Al-Shammari", role: "Operator", email: "omar@laundry.com", phone: "+965 5555-0004", branchId: "2" },
+  { id: "5", name: "Khalid Al-Mutairi", role: "Manager", email: "khalid@laundry.com", phone: "+965 5555-0005", branchId: "3" },
+  { id: "6", name: "Noura Al-Fahad", role: "Manager", email: "noura@laundry.com", phone: "+965 5555-0006", branchId: "4" },
 ];
 
 const initialCustomers: Customer[] = [
-  { id: "1", name: "Alice Cooper", email: "alice@email.com", phone: "+1 555-0001", branchId: "1", totalOrders: 15, totalSpent: 450 },
-  { id: "2", name: "Bob Martin", email: "bob@email.com", phone: "+1 555-0002", branchId: "1", totalOrders: 8, totalSpent: 280 },
-  { id: "3", name: "Carol White", email: "carol@email.com", phone: "+1 555-0003", branchId: "2", totalOrders: 22, totalSpent: 680 },
-  { id: "4", name: "David Lee", email: "david@email.com", phone: "+1 555-0004", branchId: "2", totalOrders: 5, totalSpent: 150 },
-  { id: "5", name: "Eva Green", email: "eva@email.com", phone: "+1 555-0005", branchId: "3", totalOrders: 12, totalSpent: 390 },
+  { id: "1", name: "Mohammed Al-Ahmad", email: "mohammed@email.com", phone: "+965 6666-0001", branchId: "1", totalOrders: 15, totalSpent: 45 },
+  { id: "2", name: "Layla Al-Hamad", email: "layla@email.com", phone: "+965 6666-0002", branchId: "1", totalOrders: 8, totalSpent: 28 },
+  { id: "3", name: "Youssef Al-Qattan", email: "youssef@email.com", phone: "+965 6666-0003", branchId: "2", totalOrders: 22, totalSpent: 68 },
+  { id: "4", name: "Maryam Al-Dosari", email: "maryam@email.com", phone: "+965 6666-0004", branchId: "3", totalOrders: 5, totalSpent: 15 },
+  { id: "5", name: "Hassan Al-Enezi", email: "hassan@email.com", phone: "+965 6666-0005", branchId: "4", totalOrders: 12, totalSpent: 39 },
 ];
 
 const initialOrders: Order[] = [
-  { id: "1", orderNumber: "ORD-001", customerName: "Alice Cooper", items: 5, total: 45, status: "delivered", branchId: "1", date: "2024-12-10" },
-  { id: "2", orderNumber: "ORD-002", customerName: "Bob Martin", items: 3, total: 32, status: "ready", branchId: "1", date: "2024-12-12" },
-  { id: "3", orderNumber: "ORD-003", customerName: "Carol White", items: 8, total: 78, status: "processing", branchId: "2", date: "2024-12-13" },
-  { id: "4", orderNumber: "ORD-004", customerName: "David Lee", items: 2, total: 25, status: "pending", branchId: "2", date: "2024-12-14" },
-  { id: "5", orderNumber: "ORD-005", customerName: "Eva Green", items: 6, total: 55, status: "delivered", branchId: "3", date: "2024-12-11" },
+  { id: "1", orderNumber: "ORD-001", customerName: "Mohammed Al-Ahmad", items: 5, total: 12, status: "delivered", branchId: "1", date: "2024-12-10" },
+  { id: "2", orderNumber: "ORD-002", customerName: "Layla Al-Hamad", items: 3, total: 8, status: "ready", branchId: "1", date: "2024-12-12" },
+  { id: "3", orderNumber: "ORD-003", customerName: "Youssef Al-Qattan", items: 8, total: 22, status: "processing", branchId: "2", date: "2024-12-13" },
+  { id: "4", orderNumber: "ORD-004", customerName: "Maryam Al-Dosari", items: 2, total: 6, status: "pending", branchId: "3", date: "2024-12-14" },
+  { id: "5", orderNumber: "ORD-005", customerName: "Hassan Al-Enezi", items: 6, total: 15, status: "delivered", branchId: "4", date: "2024-12-11" },
 ];
 
 const initialFinance: BranchFinance[] = [
-  { branchId: "1", revenue: 15420, expenses: 4200, payments: 14800, profit: 11220 },
-  { branchId: "2", revenue: 12850, expenses: 3800, payments: 12200, profit: 9050 },
-  { branchId: "3", revenue: 8900, expenses: 2500, payments: 8500, profit: 6400 },
+  { branchId: "1", revenue: 4850, expenses: 1200, payments: 4650, profit: 3650 },
+  { branchId: "2", revenue: 3920, expenses: 980, payments: 3750, profit: 2940 },
+  { branchId: "3", revenue: 2780, expenses: 720, payments: 2650, profit: 2060 },
+  { branchId: "4", revenue: 1950, expenses: 580, payments: 1850, profit: 1370 },
 ];
 
 const Branches = () => {
@@ -483,7 +498,7 @@ const Branches = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Revenue</p>
-                  <p className="text-2xl font-bold">${totalStats.totalRevenue.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">{totalStats.totalRevenue.toLocaleString()} KD</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-500/10">
                   <DollarSign className="h-6 w-6 text-sky-500" />
@@ -496,7 +511,7 @@ const Branches = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Profit</p>
-                  <p className="text-2xl font-bold">${totalStats.totalProfit.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">{totalStats.totalProfit.toLocaleString()} KD</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/10">
                   <ArrowUpRight className="h-6 w-6 text-violet-500" />
@@ -559,7 +574,7 @@ const Branches = () => {
                           <span>{stats.staffCount}</span>
                         </div>
                       </TableCell>
-                      <TableCell className="font-medium">${stats.revenue.toLocaleString()}</TableCell>
+                      <TableCell className="font-medium">{stats.revenue.toLocaleString()} KD</TableCell>
                       <TableCell>{getStatusBadge(branch.status)}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
@@ -796,7 +811,7 @@ const Branches = () => {
                                   <span className="text-sm">Revenue</span>
                                 </div>
                                 <span className="font-medium text-emerald-500">
-                                  ${branchFinance?.revenue.toLocaleString()}
+                                  {branchFinance?.revenue.toLocaleString()} KD
                                 </span>
                               </div>
                               <div className="flex items-center justify-between">
@@ -805,7 +820,7 @@ const Branches = () => {
                                   <span className="text-sm">Expenses</span>
                                 </div>
                                 <span className="font-medium text-destructive">
-                                  ${branchFinance?.expenses.toLocaleString()}
+                                  {branchFinance?.expenses.toLocaleString()} KD
                                 </span>
                               </div>
                               <div className="flex items-center justify-between">
@@ -814,7 +829,7 @@ const Branches = () => {
                                   <span className="text-sm">Payments Received</span>
                                 </div>
                                 <span className="font-medium">
-                                  ${branchFinance?.payments.toLocaleString()}
+                                  {branchFinance?.payments.toLocaleString()} KD
                                 </span>
                               </div>
                               <div className="border-t pt-4 flex items-center justify-between">
@@ -823,7 +838,7 @@ const Branches = () => {
                                   <span className="text-sm font-medium">Net Profit</span>
                                 </div>
                                 <span className="font-bold text-primary">
-                                  ${branchFinance?.profit.toLocaleString()}
+                                  {branchFinance?.profit.toLocaleString()} KD
                                 </span>
                               </div>
                             </CardContent>
@@ -942,7 +957,7 @@ const Branches = () => {
                               <p className="text-sm text-muted-foreground">{customer.email}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-sm font-medium">${customer.totalSpent}</p>
+                              <p className="text-sm font-medium">{customer.totalSpent} KD</p>
                               <p className="text-xs text-muted-foreground">{customer.totalOrders} orders</p>
                             </div>
                           </div>
@@ -968,7 +983,7 @@ const Branches = () => {
                             </div>
                             <div className="text-right flex items-center gap-3">
                               {getStatusBadge(order.status)}
-                              <span className="font-medium">${order.total}</span>
+                              <span className="font-medium">{order.total} KD</span>
                             </div>
                           </div>
                         ))}
