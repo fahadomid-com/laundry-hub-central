@@ -212,6 +212,8 @@ const Branches = () => {
   const [orders] = useState<Order[]>(initialOrders);
   const [finance] = useState<BranchFinance[]>(initialFinance);
   const [searchTerm, setSearchTerm] = useState("");
+  const [customerFilter, setCustomerFilter] = useState<string>("all");
+  const [revenueFilter, setRevenueFilter] = useState<string>("all");
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -254,14 +256,30 @@ const Branches = () => {
   const [editBranchEmployees, setEditBranchEmployees] = useState<Array<{ name: string; role: string; email: string; phone: string }>>([]);
   const [editEmployeeForm, setEditEmployeeForm] = useState({ name: "", role: "", email: "", phone: "" });
 
-  const filteredBranches = branches.filter(
-    (branch) =>
+  const filteredBranches = branches.filter((branch) => {
+    const matchesSearch =
       branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       branch.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      branch.city.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      branch.city.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const getBranchStats = (branchId: string) => {
+    const stats = getBranchStats(branch.id);
+
+    const matchesCustomerFilter =
+      customerFilter === "all" ||
+      (customerFilter === "0-5" && stats.customerCount <= 5) ||
+      (customerFilter === "6-10" && stats.customerCount >= 6 && stats.customerCount <= 10) ||
+      (customerFilter === "11+" && stats.customerCount > 10);
+
+    const matchesRevenueFilter =
+      revenueFilter === "all" ||
+      (revenueFilter === "0-2000" && stats.revenue <= 2000) ||
+      (revenueFilter === "2001-5000" && stats.revenue >= 2001 && stats.revenue <= 5000) ||
+      (revenueFilter === "5000+" && stats.revenue > 5000);
+
+    return matchesSearch && matchesCustomerFilter && matchesRevenueFilter;
+  });
+
+  function getBranchStats(branchId: string) {
     const branchStaff = staff.filter((s) => s.branchId === branchId);
     const branchCustomers = customers.filter((c) => c.branchId === branchId);
     const branchOrders = orders.filter((o) => o.branchId === branchId);
@@ -274,7 +292,8 @@ const Branches = () => {
       expenses: branchFinance?.expenses || 0,
       profit: branchFinance?.profit || 0,
     };
-  };
+  }
+
 
   const totalStats = {
     totalBranches: branches.length,
@@ -634,15 +653,39 @@ const Branches = () => {
           </Card>
         </div>
 
-        {/* Search */}
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search branches..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+        {/* Search and Filters */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="relative max-w-sm flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search branches..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={customerFilter} onValueChange={setCustomerFilter}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Customers" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Customers</SelectItem>
+              <SelectItem value="0-5">0 - 5</SelectItem>
+              <SelectItem value="6-10">6 - 10</SelectItem>
+              <SelectItem value="11+">11+</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={revenueFilter} onValueChange={setRevenueFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Revenue" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Revenue</SelectItem>
+              <SelectItem value="0-2000">0 - 2,000 KD</SelectItem>
+              <SelectItem value="2001-5000">2,001 - 5,000 KD</SelectItem>
+              <SelectItem value="5000+">5,000+ KD</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Branches Table */}
