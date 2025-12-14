@@ -78,7 +78,7 @@ const statusConfig = {
   "On Holiday": { color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", icon: Coffee },
 };
 
-const tasks = [
+const defaultTasks = [
   "Processing ORD-001",
   "Processing ORD-002",
   "Delivery to Salmiya",
@@ -111,7 +111,11 @@ export default function Staff() {
   const [customShifts, setCustomShifts] = useState<string[]>([]);
   const [showCustomShift, setShowCustomShift] = useState(false);
   const [customShiftInput, setCustomShiftInput] = useState("");
+  const [customTasks, setCustomTasks] = useState<string[]>([]);
+  const [showCustomTask, setShowCustomTask] = useState(false);
+  const [customTaskInput, setCustomTaskInput] = useState("");
   const allRoles = [...defaultRoles, ...customRoles];
+  const allTasks = [...defaultTasks, ...customTasks];
   const { toast } = useToast();
 
   const defaultShiftOptions = [
@@ -148,6 +152,19 @@ export default function Staff() {
     setCustomShiftInput("");
     setShowCustomShift(false);
     toast({ title: "Shift added", description: `"${customShiftInput.trim()}" has been added as a shift` });
+  };
+
+  const handleAddCustomTask = () => {
+    if (!customTaskInput.trim()) return;
+    if (allTasks.includes(customTaskInput.trim())) {
+      toast({ title: "Task exists", description: "This task already exists", variant: "destructive" });
+      return;
+    }
+    setCustomTasks((prev) => [...prev, customTaskInput.trim()]);
+    setSelectedTask(customTaskInput.trim());
+    setCustomTaskInput("");
+    setShowCustomTask(false);
+    toast({ title: "Task added", description: `"${customTaskInput.trim()}" has been added as a task` });
   };
 
   const handleAddStaff = () => {
@@ -408,18 +425,42 @@ export default function Staff() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <Select value={selectedTask} onValueChange={setSelectedTask}>
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="Select task" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover">
-                {tasks.map((task) => (
-                  <SelectItem key={task} value={task}>
-                    {task}
+            {showCustomTask ? (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter custom task"
+                  value={customTaskInput}
+                  onChange={(e) => setCustomTaskInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddCustomTask()}
+                />
+                <Button type="button" onClick={handleAddCustomTask}>Add</Button>
+                <Button type="button" variant="outline" onClick={() => { setShowCustomTask(false); setCustomTaskInput(""); }}>Cancel</Button>
+              </div>
+            ) : (
+              <Select value={selectedTask} onValueChange={(value) => {
+                if (value === "__add_custom_task__") {
+                  setShowCustomTask(true);
+                } else {
+                  setSelectedTask(value);
+                }
+              }}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select task" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  {allTasks.map((task) => (
+                    <SelectItem key={task} value={task}>
+                      {task}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="__add_custom_task__" className="text-primary">
+                    <span className="flex items-center gap-1">
+                      <Plus className="h-3 w-3" /> Add Custom Task
+                    </span>
                   </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setAssignDialogOpen(false)}>
