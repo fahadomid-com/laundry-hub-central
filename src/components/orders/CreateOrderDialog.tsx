@@ -31,7 +31,7 @@ export function CreateOrderDialog({ open, onOpenChange, onSubmit }: CreateOrderD
     customer: "",
     phone: "",
     email: "",
-    service: "",
+    location: "",
     items: 1,
     status: "Pending" as Order["status"],
     amount: 0,
@@ -43,14 +43,14 @@ export function CreateOrderDialog({ open, onOpenChange, onSubmit }: CreateOrderD
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.customer || !formData.phone || !formData.service) return;
+    if (!formData.customer || !formData.phone || !formData.location) return;
 
     onSubmit(formData);
     setFormData({
       customer: "",
       phone: "",
       email: "",
-      service: "",
+      location: "",
       items: 1,
       status: "Pending",
       amount: 0,
@@ -103,20 +103,27 @@ export function CreateOrderDialog({ open, onOpenChange, onSubmit }: CreateOrderD
               />
             </div>
             <div className="space-y-2">
-              <Label>Service *</Label>
+              <Label>Location *</Label>
               <Select
-                value={formData.service}
-                onValueChange={(v) => setFormData((p) => ({ ...p, service: v }))}
+                value={formData.location}
+                onValueChange={(v) => setFormData((p) => ({ ...p, location: v }))}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select service" />
+                  <SelectValue placeholder="Select location" />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
-                  <SelectItem value="Dry Cleaning">Dry Cleaning</SelectItem>
-                  <SelectItem value="Wash & Fold">Wash & Fold</SelectItem>
-                  <SelectItem value="Alterations">Alterations</SelectItem>
-                  <SelectItem value="Express Wash">Express Wash</SelectItem>
-                  <SelectItem value="Ironing">Ironing</SelectItem>
+                  <SelectItem value="Salmiya">Salmiya</SelectItem>
+                  <SelectItem value="Hawally">Hawally</SelectItem>
+                  <SelectItem value="Kuwait City">Kuwait City</SelectItem>
+                  <SelectItem value="Farwaniya">Farwaniya</SelectItem>
+                  <SelectItem value="Jabriya">Jabriya</SelectItem>
+                  <SelectItem value="Mishref">Mishref</SelectItem>
+                  <SelectItem value="Bayan">Bayan</SelectItem>
+                  <SelectItem value="Fintas">Fintas</SelectItem>
+                  <SelectItem value="Mangaf">Mangaf</SelectItem>
+                  <SelectItem value="Mahboula">Mahboula</SelectItem>
+                  <SelectItem value="Sabah Al Salem">Sabah Al Salem</SelectItem>
+                  <SelectItem value="Rumaithiya">Rumaithiya</SelectItem>
                 </SelectContent>
               </Select>
             </div>
