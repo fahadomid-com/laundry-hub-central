@@ -103,6 +103,7 @@ export default function Staff() {
     shift: "",
     phone: "",
     email: "",
+    monthlySalary: "",
   });
   const [customRoles, setCustomRoles] = useState<string[]>([]);
   const [showCustomRole, setShowCustomRole] = useState(false);
@@ -163,7 +164,7 @@ export default function Staff() {
       tasksCompleted: 0,
     };
     setStaff((prev) => [...prev, staffMember]);
-    setNewStaff({ name: "", role: "", shift: "", phone: "", email: "" });
+    setNewStaff({ name: "", role: "", shift: "", phone: "", email: "", monthlySalary: "" });
     setAddDialogOpen(false);
     toast({ title: "Staff added", description: `${staffMember.name} has been added as ${staffMember.role}` });
   };
@@ -542,6 +543,17 @@ export default function Staff() {
                   </SelectContent>
                 </Select>
               )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="monthlySalary">Monthly Salary (KD)</Label>
+              <Input
+                id="monthlySalary"
+                type="number"
+                placeholder="e.g., 450"
+                value={newStaff.monthlySalary}
+                onChange={(e) => setNewStaff({ ...newStaff, monthlySalary: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">Enter the employee's monthly salary in Kuwaiti Dinar</p>
             </div>
           </div>
           <DialogFooter>
