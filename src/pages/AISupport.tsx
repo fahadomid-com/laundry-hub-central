@@ -27,8 +27,6 @@ import {
   AlertCircle,
   Settings,
   Sparkles,
-  Zap,
-  HelpCircle,
   ThumbsUp,
   ThumbsDown,
   Save,
@@ -62,15 +60,6 @@ const initialTickets: Ticket[] = [
   { id: "TKT-002", customer: "Jane Smith", subject: "Billing inquiry", status: "in-progress", priority: "medium", createdAt: "Dec 11, 2025", lastReply: "1 day ago" },
   { id: "TKT-003", customer: "Mike Johnson", subject: "Service feedback", status: "resolved", priority: "low", createdAt: "Dec 10, 2025", lastReply: "2 days ago" },
   { id: "TKT-004", customer: "Sarah Wilson", subject: "Missing item complaint", status: "open", priority: "high", createdAt: "Dec 12, 2025", lastReply: "30 mins ago" },
-];
-
-const quickResponses = [
-  "Check order status",
-  "Track delivery",
-  "Service pricing",
-  "Operating hours",
-  "Loyalty points balance",
-  "Cancel/modify order",
 ];
 
 const aiResponses: Record<string, string> = {
@@ -253,131 +242,92 @@ export default function AISupport() {
           </TabsList>
 
           <TabsContent value="chat">
-            <div className="grid gap-4 lg:grid-cols-3">
-              {/* Chat Window */}
-              <Card className="lg:col-span-2 flex flex-col h-[600px]">
-                <div className="border-b border-border p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-primary/10 p-2">
-                      <Bot className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium">AI Support Assistant</p>
-                      <p className="text-sm text-green-600 flex items-center gap-1">
-                        <span className="h-2 w-2 rounded-full bg-green-500" />
-                        Online
-                      </p>
-                    </div>
+            <Card className="flex flex-col h-[600px]">
+              <div className="border-b border-border p-4">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-primary/10 p-2">
+                    <Bot className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium">AI Support Assistant</p>
+                    <p className="text-sm text-green-600 flex items-center gap-1">
+                      <span className="h-2 w-2 rounded-full bg-green-500" />
+                      Online
+                    </p>
                   </div>
                 </div>
+              </div>
 
-                <ScrollArea className="flex-1 p-4">
-                  <div className="space-y-4">
-                    {messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
-                      >
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className={message.role === "assistant" ? "bg-primary/10" : "bg-muted"}>
-                            {message.role === "assistant" ? <Bot className="h-4 w-4 text-primary" /> : <User className="h-4 w-4" />}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className={`max-w-[70%] ${message.role === "user" ? "text-right" : ""}`}>
-                          <div
-                            className={`rounded-lg p-3 ${
-                              message.role === "user"
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted"
-                            }`}
-                          >
-                            <p className="text-sm whitespace-pre-line">{message.content}</p>
-                          </div>
-                          <p className="mt-1 text-xs text-muted-foreground">{message.timestamp}</p>
-                        </div>
-                      </div>
-                    ))}
-                    {isTyping && (
-                      <div className="flex gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-primary/10">
-                            <Bot className="h-4 w-4 text-primary" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="rounded-lg bg-muted p-3">
-                          <div className="flex gap-1">
-                            <span className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce" />
-                            <span className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:0.2s]" />
-                            <span className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:0.4s]" />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div ref={messagesEndRef} />
-                  </div>
-                </ScrollArea>
-
-                <div className="border-t border-border p-4">
-                  <div className="flex gap-2">
-                    <Input
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder="Type your message..."
-                      onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                    />
-                    <Button onClick={() => handleSendMessage()}>
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between">
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="sm" onClick={() => handleFeedback(true)}>
-                        <ThumbsUp className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleFeedback(false)}>
-                        <ThumbsDown className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Quick Actions */}
-              <Card className="p-4">
-                <h3 className="font-semibold flex items-center gap-2 mb-4">
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  Quick Responses
-                </h3>
-                <div className="space-y-2">
-                  {quickResponses.map((response) => (
-                    <Button
-                      key={response}
-                      variant="outline"
-                      className="w-full justify-start"
-                      onClick={() => handleSendMessage(response)}
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4">
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
                     >
-                      <HelpCircle className="mr-2 h-4 w-4" />
-                      {response}
-                    </Button>
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className={message.role === "assistant" ? "bg-primary/10" : "bg-muted"}>
+                          {message.role === "assistant" ? <Bot className="h-4 w-4 text-primary" /> : <User className="h-4 w-4" />}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className={`max-w-[70%] ${message.role === "user" ? "text-right" : ""}`}>
+                        <div
+                          className={`rounded-lg p-3 ${
+                            message.role === "user"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted"
+                          }`}
+                        >
+                          <p className="text-sm whitespace-pre-line">{message.content}</p>
+                        </div>
+                        <p className="mt-1 text-xs text-muted-foreground">{message.timestamp}</p>
+                      </div>
+                    </div>
                   ))}
+                  {isTyping && (
+                    <div className="flex gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-primary/10">
+                          <Bot className="h-4 w-4 text-primary" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="rounded-lg bg-muted p-3">
+                        <div className="flex gap-1">
+                          <span className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce" />
+                          <span className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:0.2s]" />
+                          <span className="h-2 w-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:0.4s]" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
                 </div>
+              </ScrollArea>
 
-                <div className="mt-6">
-                  <h3 className="font-semibold flex items-center gap-2 mb-4">
-                    <Zap className="h-4 w-4 text-primary" />
-                    AI Capabilities
-                  </h3>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p>✓ Order tracking & status</p>
-                    <p>✓ Service information</p>
-                    <p>✓ Pricing inquiries</p>
-                    <p>✓ Loyalty points lookup</p>
-                    <p>✓ Complaint handling</p>
-                    <p>✓ 24/7 availability</p>
+              <div className="border-t border-border p-4">
+                <div className="flex gap-2">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Type your message..."
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                  />
+                  <Button onClick={() => handleSendMessage()}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="sm" onClick={() => handleFeedback(true)}>
+                      <ThumbsUp className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleFeedback(false)}>
+                      <ThumbsDown className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-              </Card>
-            </div>
+              </div>
+            </Card>
           </TabsContent>
 
           <TabsContent value="tickets" className="space-y-4">
