@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Package, Users, Car, UserCog, DollarSign, BarChart3, Bot, Megaphone, Settings, WashingMachine, Receipt, Crown } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Package, Users, Car, UserCog, DollarSign, BarChart3, Bot, Megaphone, Settings, WashingMachine, Receipt, Crown, Building2 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 const menuItems = [{
@@ -29,6 +29,10 @@ const menuItems = [{
   title: "Staff",
   icon: UserCog,
   url: "/staff"
+}, {
+  title: "Branches",
+  icon: Building2,
+  url: "/branches"
 }, {
   title: "Finance",
   icon: DollarSign,
