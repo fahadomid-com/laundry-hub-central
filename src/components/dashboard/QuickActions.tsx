@@ -1,15 +1,15 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ManageOrdersSheet } from "./ManageOrdersSheet";
-import { AddCustomerDialog } from "./AddCustomerDialog";
 import { InvoicingSheet } from "./InvoicingSheet";
 import { ExpenseSheet } from "./ExpenseSheet";
 
 export function QuickActions() {
   const [ordersOpen, setOrdersOpen] = useState(false);
-  const [customerOpen, setCustomerOpen] = useState(false);
   const [invoicingOpen, setInvoicingOpen] = useState(false);
   const [expenseOpen, setExpenseOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -24,9 +24,9 @@ export function QuickActions() {
           </Button>
           <Button
             className="bg-info text-info-foreground hover:bg-info/90"
-            onClick={() => setCustomerOpen(true)}
+            onClick={() => navigate("/drivers")}
           >
-            Add Customer
+            Manage Deliveries
           </Button>
           <Button
             className="bg-success text-success-foreground hover:bg-success/90"
@@ -44,7 +44,6 @@ export function QuickActions() {
       </div>
 
       <ManageOrdersSheet open={ordersOpen} onOpenChange={setOrdersOpen} />
-      <AddCustomerDialog open={customerOpen} onOpenChange={setCustomerOpen} />
       <InvoicingSheet open={invoicingOpen} onOpenChange={setInvoicingOpen} />
       <ExpenseSheet open={expenseOpen} onOpenChange={setExpenseOpen} />
     </>
