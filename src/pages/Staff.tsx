@@ -626,6 +626,17 @@ export default function Staff() {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-salary">Monthly Salary (KD)</Label>
+                <Input
+                  id="edit-salary"
+                  type="number"
+                  placeholder="e.g., 450"
+                  value={(editStaff as any).monthlySalary || ""}
+                  onChange={(e) => setEditStaff({ ...editStaff, monthlySalary: e.target.value } as any)}
+                />
+                <p className="text-xs text-muted-foreground">Employee's monthly salary in Kuwaiti Dinar</p>
+              </div>
             </div>
           )}
           <DialogFooter>
