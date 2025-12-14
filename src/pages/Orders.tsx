@@ -46,7 +46,7 @@ export interface Order {
   customer: string;
   phone: string;
   email: string;
-  service: string;
+  location: string;
   items: number;
   status: "Pending" | "In Progress" | "Ready" | "Completed" | "Cancelled";
   amount: number;
@@ -59,14 +59,14 @@ export interface Order {
 }
 
 const initialOrders: Order[] = [
-  { id: "ORD-001", customer: "John Doe", phone: "+965 1234 5678", email: "john@email.com", service: "Dry Cleaning", items: 5, status: "In Progress", amount: 45.50, paidAmount: 45.50, createdAt: "Dec 12, 2025", dueDate: "Dec 14, 2025", notes: "Handle with care", address: "Block 5, Salmiya", assignedDriver: "Ahmed Hassan" },
-  { id: "ORD-002", customer: "Jane Smith", phone: "+965 2345 6789", email: "jane@email.com", service: "Wash & Fold", items: 8, status: "Completed", amount: 28.75, paidAmount: 28.75, createdAt: "Dec 12, 2025", dueDate: "Dec 13, 2025", notes: "", address: "Block 3, Hawally", assignedDriver: "Mohammed Ali" },
-  { id: "ORD-003", customer: "Mike Johnson", phone: "+965 3456 7890", email: "mike@email.com", service: "Alterations", items: 3, status: "Pending", amount: 65.00, paidAmount: 0, createdAt: "Dec 11, 2025", dueDate: "Dec 15, 2025", notes: "Shorten pants by 2 inches", address: "Block 1, Kuwait City" },
-  { id: "ORD-004", customer: "Sarah Wilson", phone: "+965 4567 8901", email: "sarah@email.com", service: "Express Wash", items: 12, status: "Ready", amount: 35.25, paidAmount: 35.25, createdAt: "Dec 11, 2025", dueDate: "Dec 12, 2025", notes: "", address: "Block 7, Farwaniya", assignedDriver: "Yusuf Ibrahim" },
-  { id: "ORD-005", customer: "Emily Davis", phone: "+965 5678 9012", email: "emily@email.com", service: "Dry Cleaning", items: 6, status: "In Progress", amount: 55.50, paidAmount: 30.00, createdAt: "Dec 10, 2025", dueDate: "Dec 13, 2025", notes: "VIP customer", address: "Block 2, Salmiya", assignedDriver: "Hassan Nasser" },
-  { id: "ORD-006", customer: "Michael Brown", phone: "+965 6789 0123", email: "michael@email.com", service: "Ironing", items: 10, status: "Pending", amount: 22.00, paidAmount: 0, createdAt: "Dec 10, 2025", dueDate: "Dec 12, 2025", notes: "", address: "Block 4, Jabriya" },
-  { id: "ORD-007", customer: "Lisa Anderson", phone: "+965 7890 1234", email: "lisa@email.com", service: "Wash & Fold", items: 15, status: "Completed", amount: 42.00, paidAmount: 42.00, createdAt: "Dec 09, 2025", dueDate: "Dec 11, 2025", notes: "", address: "Block 6, Mishref", assignedDriver: "Khalid Omar" },
-  { id: "ORD-008", customer: "David Lee", phone: "+965 8901 2345", email: "david@email.com", service: "Dry Cleaning", items: 4, status: "Cancelled", amount: 38.00, paidAmount: 0, createdAt: "Dec 09, 2025", dueDate: "Dec 12, 2025", notes: "Customer cancelled", address: "Block 8, Fintas" },
+  { id: "ORD-001", customer: "John Doe", phone: "+965 1234 5678", email: "john@email.com", location: "Salmiya", items: 5, status: "In Progress", amount: 45.50, paidAmount: 45.50, createdAt: "Dec 12, 2025", dueDate: "Dec 14, 2025", notes: "Handle with care", address: "Block 5, Salmiya", assignedDriver: "Ahmed Hassan" },
+  { id: "ORD-002", customer: "Jane Smith", phone: "+965 2345 6789", email: "jane@email.com", location: "Hawally", items: 8, status: "Completed", amount: 28.75, paidAmount: 28.75, createdAt: "Dec 12, 2025", dueDate: "Dec 13, 2025", notes: "", address: "Block 3, Hawally", assignedDriver: "Mohammed Ali" },
+  { id: "ORD-003", customer: "Mike Johnson", phone: "+965 3456 7890", email: "mike@email.com", location: "Kuwait City", items: 3, status: "Pending", amount: 65.00, paidAmount: 0, createdAt: "Dec 11, 2025", dueDate: "Dec 15, 2025", notes: "Shorten pants by 2 inches", address: "Block 1, Kuwait City" },
+  { id: "ORD-004", customer: "Sarah Wilson", phone: "+965 4567 8901", email: "sarah@email.com", location: "Farwaniya", items: 12, status: "Ready", amount: 35.25, paidAmount: 35.25, createdAt: "Dec 11, 2025", dueDate: "Dec 12, 2025", notes: "", address: "Block 7, Farwaniya", assignedDriver: "Yusuf Ibrahim" },
+  { id: "ORD-005", customer: "Emily Davis", phone: "+965 5678 9012", email: "emily@email.com", location: "Bayan", items: 6, status: "In Progress", amount: 55.50, paidAmount: 30.00, createdAt: "Dec 10, 2025", dueDate: "Dec 13, 2025", notes: "VIP customer", address: "Block 2, Bayan", assignedDriver: "Hassan Nasser" },
+  { id: "ORD-006", customer: "Michael Brown", phone: "+965 6789 0123", email: "michael@email.com", location: "Jabriya", items: 10, status: "Pending", amount: 22.00, paidAmount: 0, createdAt: "Dec 10, 2025", dueDate: "Dec 12, 2025", notes: "", address: "Block 4, Jabriya" },
+  { id: "ORD-007", customer: "Lisa Anderson", phone: "+965 7890 1234", email: "lisa@email.com", location: "Mishref", items: 15, status: "Completed", amount: 42.00, paidAmount: 42.00, createdAt: "Dec 09, 2025", dueDate: "Dec 11, 2025", notes: "", address: "Block 6, Mishref", assignedDriver: "Khalid Omar" },
+  { id: "ORD-008", customer: "David Lee", phone: "+965 8901 2345", email: "david@email.com", location: "Fintas", items: 4, status: "Cancelled", amount: 38.00, paidAmount: 0, createdAt: "Dec 09, 2025", dueDate: "Dec 12, 2025", notes: "Customer cancelled", address: "Block 8, Fintas" },
 ];
 
 const statusConfig = {
@@ -282,7 +282,7 @@ export default function Orders() {
                     Customer
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Service
+                    Location
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                     Items
@@ -325,7 +325,7 @@ export default function Orders() {
                         </div>
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
-                        {order.service}
+                        {order.location}
                       </td>
                       <td className="whitespace-nowrap px-4 py-3 text-sm">{order.items}</td>
                       <td className="whitespace-nowrap px-4 py-3">

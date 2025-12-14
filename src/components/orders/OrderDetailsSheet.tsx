@@ -72,7 +72,7 @@ export function OrderDetailsSheet({ order, onClose }: OrderDetailsSheetProps) {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <Package className="h-4 w-4 text-muted-foreground" />
-                <span>{order.service}</span>
+                <span>Location: {order.location}</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-muted-foreground">Items:</span>

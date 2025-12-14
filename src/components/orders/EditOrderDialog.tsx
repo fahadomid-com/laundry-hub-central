@@ -37,7 +37,7 @@ export function EditOrderDialog({ order, onClose, onSubmit }: EditOrderDialogPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.customer || !formData.phone || !formData.service) return;
+    if (!formData.customer || !formData.phone || !formData.location) return;
     onSubmit(formData);
     onClose();
   };
@@ -80,27 +80,27 @@ export function EditOrderDialog({ order, onClose, onSubmit }: EditOrderDialogPro
               />
             </div>
             <div className="space-y-2">
-              <Label>Service *</Label>
+              <Label>Location *</Label>
               <Select
-                value={formData.service}
-                onValueChange={(v) => setFormData((p) => p && { ...p, service: v })}
+                value={formData.location}
+                onValueChange={(v) => setFormData((p) => p && { ...p, location: v })}
               >
                 <SelectTrigger className="bg-background">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-popover">
-                  <SelectItem value="Bedding/Bath">Bedding/Bath</SelectItem>
-                  <SelectItem value="Accessories">Accessories</SelectItem>
-                  <SelectItem value="Home">Home</SelectItem>
-                  <SelectItem value="Undergarment">Undergarment</SelectItem>
-                  <SelectItem value="Suits">Suits</SelectItem>
-                  <SelectItem value="Dresses">Dresses</SelectItem>
-                  <SelectItem value="Children">Children</SelectItem>
-                  <SelectItem value="Traditional">Traditional</SelectItem>
-                  <SelectItem value="Tops">Tops</SelectItem>
-                  <SelectItem value="Bottoms">Bottoms</SelectItem>
-                  <SelectItem value="Outdoors">Outdoors</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  <SelectItem value="Salmiya">Salmiya</SelectItem>
+                  <SelectItem value="Hawally">Hawally</SelectItem>
+                  <SelectItem value="Kuwait City">Kuwait City</SelectItem>
+                  <SelectItem value="Farwaniya">Farwaniya</SelectItem>
+                  <SelectItem value="Jabriya">Jabriya</SelectItem>
+                  <SelectItem value="Mishref">Mishref</SelectItem>
+                  <SelectItem value="Bayan">Bayan</SelectItem>
+                  <SelectItem value="Fintas">Fintas</SelectItem>
+                  <SelectItem value="Mangaf">Mangaf</SelectItem>
+                  <SelectItem value="Mahboula">Mahboula</SelectItem>
+                  <SelectItem value="Sabah Al Salem">Sabah Al Salem</SelectItem>
+                  <SelectItem value="Rumaithiya">Rumaithiya</SelectItem>
                 </SelectContent>
               </Select>
             </div>
