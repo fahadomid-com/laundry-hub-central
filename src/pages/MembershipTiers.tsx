@@ -248,7 +248,6 @@ export default function MembershipTiers() {
     totalTiers: tiers.length,
     activeTiers: tiers.filter((t) => t.isActive).length,
     totalMembers: tiers.reduce((sum, t) => sum + t.memberCount, 0),
-    avgDiscount: tiers.length > 0 ? (tiers.reduce((sum, t) => sum + t.discountPercent, 0) / tiers.length).toFixed(1) : 0,
   };
 
   const sortedTiers = [...tiers].sort((a, b) => a.sortOrder - b.sortOrder);
@@ -268,7 +267,7 @@ export default function MembershipTiers() {
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-3">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <Layers className="h-8 w-8 text-primary" />
@@ -293,15 +292,6 @@ export default function MembershipTiers() {
               <div>
                 <p className="text-2xl font-bold">{stats.totalMembers}</p>
                 <p className="text-sm text-muted-foreground">Total Members</p>
-              </div>
-            </div>
-          </Card>
-          <Card className="p-4 bg-purple-50 dark:bg-purple-950/20">
-            <div className="flex items-center gap-3">
-              <Percent className="h-8 w-8 text-purple-600" />
-              <div>
-                <p className="text-2xl font-bold">{stats.avgDiscount}%</p>
-                <p className="text-sm text-muted-foreground">Avg Discount</p>
               </div>
             </div>
           </Card>
