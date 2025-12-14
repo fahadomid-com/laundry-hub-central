@@ -37,6 +37,8 @@ import {
   File,
   X,
   Database,
+  UserCheck,
+  XCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -83,6 +85,8 @@ export default function AISupport() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [ticketFilter, setTicketFilter] = useState("all");
+  const [isTransferredToHuman, setIsTransferredToHuman] = useState(false);
+  const [chatIssueStatus, setChatIssueStatus] = useState<"not-resolved" | "in-progress" | "resolved">("in-progress");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -258,6 +262,41 @@ export default function AISupport() {
     toast({ title: "Feedback received", description: positive ? "Thank you for your positive feedback!" : "We'll work on improving." });
   };
 
+  const handleTransferToHuman = () => {
+    setIsTransferredToHuman(true);
+    const systemMessage: Message = {
+      id: String(Date.now()),
+      role: "assistant",
+      content: "This conversation has been transferred to a human agent. A support representative will join shortly. Please hold.",
+      timestamp: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+    };
+    setMessages((prev) => [...prev, systemMessage]);
+    toast({
+      title: "Transferred to Human",
+      description: "A human agent will take over this conversation.",
+    });
+  };
+
+  const handleIssueStatusChange = (status: "not-resolved" | "in-progress" | "resolved") => {
+    setChatIssueStatus(status);
+    toast({
+      title: "Issue Status Updated",
+      description: `Issue marked as ${status.replace("-", " ")}.`,
+    });
+  };
+
+  const issueStatusColors = {
+    "not-resolved": "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+    "in-progress": "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
+    "resolved": "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  };
+
+  const issueStatusIcons = {
+    "not-resolved": <XCircle className="h-3 w-3" />,
+    "in-progress": <Clock className="h-3 w-3" />,
+    "resolved": <CheckCircle className="h-3 w-3" />,
+  };
+
   const filteredTickets = tickets.filter((t) => {
     return ticketFilter === "all" || t.status === ticketFilter;
   });
@@ -339,16 +378,73 @@ export default function AISupport() {
           <TabsContent value="chat">
             <Card className="flex flex-col h-[600px]">
               <div className="border-b border-border p-4">
-                <div className="flex items-center gap-3">
-                  <div className="rounded-full bg-primary/10 p-2">
-                    <Bot className="h-5 w-5 text-primary" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-primary/10 p-2">
+                      {isTransferredToHuman ? (
+                        <UserCheck className="h-5 w-5 text-primary" />
+                      ) : (
+                        <Bot className="h-5 w-5 text-primary" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-medium">
+                        {isTransferredToHuman ? "Human Agent" : "AI Support Assistant"}
+                      </p>
+                      <p className="text-sm text-green-600 flex items-center gap-1">
+                        <span className="h-2 w-2 rounded-full bg-green-500" />
+                        {isTransferredToHuman ? "Agent Connected" : "Online"}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">AI Support Assistant</p>
-                    <p className="text-sm text-green-600 flex items-center gap-1">
-                      <span className="h-2 w-2 rounded-full bg-green-500" />
-                      Online
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <Select value={chatIssueStatus} onValueChange={(v) => handleIssueStatusChange(v as "not-resolved" | "in-progress" | "resolved")}>
+                      <SelectTrigger className="w-36 h-8 bg-background">
+                        <SelectValue>
+                          <div className="flex items-center gap-1.5">
+                            {issueStatusIcons[chatIssueStatus]}
+                            <span className="capitalize">{chatIssueStatus.replace("-", " ")}</span>
+                          </div>
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover">
+                        <SelectItem value="not-resolved">
+                          <div className="flex items-center gap-2">
+                            <XCircle className="h-3 w-3 text-red-500" />
+                            Not Resolved
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="in-progress">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-3 w-3 text-yellow-500" />
+                            In Progress
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="resolved">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            Resolved
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {!isTransferredToHuman && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleTransferToHuman}
+                        className="gap-1.5"
+                      >
+                        <UserCheck className="h-4 w-4" />
+                        Transfer to Human
+                      </Button>
+                    )}
+                    {isTransferredToHuman && (
+                      <Badge className={issueStatusColors["in-progress"]}>
+                        <UserCheck className="h-3 w-3 mr-1" />
+                        Human Agent
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </div>
