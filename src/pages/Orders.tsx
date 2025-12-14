@@ -81,7 +81,6 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [serviceFilter, setServiceFilter] = useState("all");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   
@@ -98,8 +97,7 @@ export default function Orders() {
       order.customer.toLowerCase().includes(search.toLowerCase()) ||
       order.phone.includes(search);
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
-    const matchesService = serviceFilter === "all" || order.service === serviceFilter;
-    return matchesSearch && matchesStatus && matchesService;
+    return matchesSearch && matchesStatus;
   });
 
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -230,26 +228,6 @@ export default function Orders() {
                   <SelectItem value="Ready">Ready</SelectItem>
                   <SelectItem value="Completed">Completed</SelectItem>
                   <SelectItem value="Cancelled">Cancelled</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={serviceFilter} onValueChange={setServiceFilter}>
-                <SelectTrigger className="w-full sm:w-40 bg-background">
-                  <SelectValue placeholder="Service" />
-                </SelectTrigger>
-                <SelectContent className="bg-popover">
-                  <SelectItem value="all">All Services</SelectItem>
-                  <SelectItem value="Bedding/Bath">Bedding/Bath</SelectItem>
-                  <SelectItem value="Accessories">Accessories</SelectItem>
-                  <SelectItem value="Home">Home</SelectItem>
-                  <SelectItem value="Undergarment">Undergarment</SelectItem>
-                  <SelectItem value="Suits">Suits</SelectItem>
-                  <SelectItem value="Dresses">Dresses</SelectItem>
-                  <SelectItem value="Children">Children</SelectItem>
-                  <SelectItem value="Traditional">Traditional</SelectItem>
-                  <SelectItem value="Tops">Tops</SelectItem>
-                  <SelectItem value="Bottoms">Bottoms</SelectItem>
-                  <SelectItem value="Outdoors">Outdoors</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
