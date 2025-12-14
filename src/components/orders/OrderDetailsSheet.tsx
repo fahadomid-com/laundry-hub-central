@@ -1,7 +1,7 @@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { User, Phone, Mail, MapPin, Calendar, Package, CreditCard, FileText } from "lucide-react";
+import { User, Phone, Mail, MapPin, Calendar, Package, CreditCard, FileText, Car } from "lucide-react";
 import type { Order } from "@/pages/Orders";
 
 interface OrderDetailsSheetProps {
@@ -85,6 +85,10 @@ export function OrderDetailsSheet({ order, onClose }: OrderDetailsSheetProps) {
               <div className="flex items-center gap-3">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span>Due: {order.dueDate}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Car className="h-4 w-4 text-muted-foreground" />
+                <span>Driver: {order.assignedDriver || "Not assigned"}</span>
               </div>
             </div>
           </div>

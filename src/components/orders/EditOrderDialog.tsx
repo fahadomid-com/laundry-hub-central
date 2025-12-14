@@ -168,6 +168,26 @@ export function EditOrderDialog({ order, onClose, onSubmit }: EditOrderDialogPro
           </div>
 
           <div className="space-y-2">
+            <Label>Driver Assigned</Label>
+            <Select
+              value={formData.assignedDriver || "none"}
+              onValueChange={(v) => setFormData((p) => p && { ...p, assignedDriver: v === "none" ? undefined : v })}
+            >
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Select driver" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover">
+                <SelectItem value="none">Not assigned</SelectItem>
+                <SelectItem value="Ahmed Hassan">Ahmed Hassan</SelectItem>
+                <SelectItem value="Mohammed Ali">Mohammed Ali</SelectItem>
+                <SelectItem value="Khalid Omar">Khalid Omar</SelectItem>
+                <SelectItem value="Yusuf Ibrahim">Yusuf Ibrahim</SelectItem>
+                <SelectItem value="Faisal Ahmed">Faisal Ahmed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
             <Label>Address</Label>
             <Input
               value={formData.address}
