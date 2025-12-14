@@ -665,25 +665,25 @@ const Branches = () => {
             />
           </div>
           <Select value={customerFilter} onValueChange={setCustomerFilter}>
-            <SelectTrigger className="w-[160px]">
-              <SelectValue placeholder="Customers" />
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Branch Customers" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Customers</SelectItem>
-              <SelectItem value="0-5">0 - 5</SelectItem>
-              <SelectItem value="6-10">6 - 10</SelectItem>
-              <SelectItem value="11+">11+</SelectItem>
+              <SelectItem value="0-5">0 - 5 per branch</SelectItem>
+              <SelectItem value="6-10">6 - 10 per branch</SelectItem>
+              <SelectItem value="11+">11+ per branch</SelectItem>
             </SelectContent>
           </Select>
           <Select value={revenueFilter} onValueChange={setRevenueFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Revenue" />
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Branch Revenue" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Revenue</SelectItem>
-              <SelectItem value="0-2000">0 - 2,000 KD</SelectItem>
-              <SelectItem value="2001-5000">2,001 - 5,000 KD</SelectItem>
-              <SelectItem value="5000+">5,000+ KD</SelectItem>
+              <SelectItem value="0-2000">0 - 2,000 KD per branch</SelectItem>
+              <SelectItem value="2001-5000">2,001 - 5,000 KD per branch</SelectItem>
+              <SelectItem value="5000+">5,000+ KD per branch</SelectItem>
             </SelectContent>
           </Select>
         </div>
