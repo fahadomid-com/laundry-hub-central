@@ -329,10 +329,6 @@ export default function Customers() {
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleSendMessage(customer)}>
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        Send Message
-                      </DropdownMenuItem>
                       <DropdownMenuItem
                         className="text-destructive"
                         onClick={() => handleDeleteCustomer(customer.id)}
