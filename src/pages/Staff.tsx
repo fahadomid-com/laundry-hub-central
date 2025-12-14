@@ -95,6 +95,7 @@ const defaultTasks = [
 export default function Staff() {
   const [staff, setStaff] = useState<Staff[]>(initialStaff);
   const [roleFilter, setRoleFilter] = useState("all");
+  const [branchFilter, setBranchFilter] = useState("all");
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -193,7 +194,9 @@ export default function Staff() {
   };
 
   const filteredStaff = staff.filter((s) => {
-    return roleFilter === "all" || s.role === roleFilter;
+    const matchesRole = roleFilter === "all" || s.role === roleFilter;
+    const matchesBranch = branchFilter === "all" || s.branch === branchFilter;
+    return matchesRole && matchesBranch;
   });
 
   const stats = {
@@ -309,20 +312,33 @@ export default function Staff() {
 
         {/* Staff Members */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <h2 className="text-lg font-semibold">Staff Members</h2>
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-40 bg-background">
-                <SelectValue placeholder="All Roles" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover">
-                <SelectItem value="all">All Roles</SelectItem>
-                <SelectItem value="Washer">Washers</SelectItem>
-                <SelectItem value="Driver">Drivers</SelectItem>
-                <SelectItem value="Ironer">Ironers</SelectItem>
-                <SelectItem value="Manager">Managers</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Select value={branchFilter} onValueChange={setBranchFilter}>
+                <SelectTrigger className="w-40 bg-background">
+                  <SelectValue placeholder="All Branches" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="all">All Branches</SelectItem>
+                  {defaultBranches.map((branch) => (
+                    <SelectItem key={branch} value={branch}>{branch}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger className="w-40 bg-background">
+                  <SelectValue placeholder="All Roles" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="Washer">Washers</SelectItem>
+                  <SelectItem value="Driver">Drivers</SelectItem>
+                  <SelectItem value="Ironer">Ironers</SelectItem>
+                  <SelectItem value="Manager">Managers</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
