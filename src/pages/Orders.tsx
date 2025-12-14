@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
-  Monitor,
   Filter,
   Download,
   MoreHorizontal,
@@ -149,10 +148,6 @@ export default function Orders() {
     toast({ title: "Exporting", description: "Orders data is being exported to CSV" });
   };
 
-  const handleOpenPOS = () => {
-    window.open("/pos", "_blank");
-  };
-
   const handleUpdateOrder = (updatedOrder: Order) => {
     setOrders((prev) => prev.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)));
     toast({ title: "Order updated", description: `${updatedOrder.id} has been updated` });
@@ -181,17 +176,11 @@ export default function Orders() {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Orders</h1>
-            <p className="mt-1 text-muted-foreground">
-              Manage and track all laundry orders.
-            </p>
-          </div>
-          <Button onClick={handleOpenPOS}>
-            <Monitor className="mr-2 h-4 w-4" />
-            Login POS System
-          </Button>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Orders</h1>
+          <p className="mt-1 text-muted-foreground">
+            Manage and track all laundry orders.
+          </p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
