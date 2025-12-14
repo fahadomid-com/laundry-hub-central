@@ -256,28 +256,43 @@ const Branches = () => {
   const [editBranchEmployees, setEditBranchEmployees] = useState<Array<{ name: string; role: string; email: string; phone: string }>>([]);
   const [editEmployeeForm, setEditEmployeeForm] = useState({ name: "", role: "", email: "", phone: "" });
 
-  const filteredBranches = branches.filter((branch) => {
-    const matchesSearch =
-      branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      branch.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      branch.city.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredBranches = branches
+    .filter((branch) => {
+      const matchesSearch =
+        branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        branch.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        branch.city.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const stats = getBranchStats(branch.id);
+      const stats = getBranchStats(branch.id);
 
-    const matchesCustomerFilter =
-      customerFilter === "all" ||
-      (customerFilter === "0-5" && stats.customerCount <= 5) ||
-      (customerFilter === "6-10" && stats.customerCount >= 6 && stats.customerCount <= 10) ||
-      (customerFilter === "11+" && stats.customerCount > 10);
+      const matchesCustomerFilter =
+        customerFilter === "all" ||
+        customerFilter === "most" ||
+        (customerFilter === "0-5" && stats.customerCount <= 5) ||
+        (customerFilter === "6-10" && stats.customerCount >= 6 && stats.customerCount <= 10) ||
+        (customerFilter === "11+" && stats.customerCount > 10);
 
-    const matchesRevenueFilter =
-      revenueFilter === "all" ||
-      (revenueFilter === "0-2000" && stats.revenue <= 2000) ||
-      (revenueFilter === "2001-5000" && stats.revenue >= 2001 && stats.revenue <= 5000) ||
-      (revenueFilter === "5000+" && stats.revenue > 5000);
+      const matchesRevenueFilter =
+        revenueFilter === "all" ||
+        revenueFilter === "most" ||
+        (revenueFilter === "0-2000" && stats.revenue <= 2000) ||
+        (revenueFilter === "2001-5000" && stats.revenue >= 2001 && stats.revenue <= 5000) ||
+        (revenueFilter === "5000+" && stats.revenue > 5000);
 
-    return matchesSearch && matchesCustomerFilter && matchesRevenueFilter;
-  });
+      return matchesSearch && matchesCustomerFilter && matchesRevenueFilter;
+    })
+    .sort((a, b) => {
+      const statsA = getBranchStats(a.id);
+      const statsB = getBranchStats(b.id);
+
+      if (customerFilter === "most") {
+        return statsB.customerCount - statsA.customerCount;
+      }
+      if (revenueFilter === "most") {
+        return statsB.revenue - statsA.revenue;
+      }
+      return 0;
+    });
 
   function getBranchStats(branchId: string) {
     const branchStaff = staff.filter((s) => s.branchId === branchId);
@@ -665,11 +680,12 @@ const Branches = () => {
             />
           </div>
           <Select value={customerFilter} onValueChange={setCustomerFilter}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Branch Customers" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Customers</SelectItem>
+              <SelectItem value="most">Most Customers First</SelectItem>
               <SelectItem value="0-5">0 - 5 per branch</SelectItem>
               <SelectItem value="6-10">6 - 10 per branch</SelectItem>
               <SelectItem value="11+">11+ per branch</SelectItem>
@@ -681,6 +697,7 @@ const Branches = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Revenue</SelectItem>
+              <SelectItem value="most">Most Revenue First</SelectItem>
               <SelectItem value="0-2000">0 - 2,000 KD per branch</SelectItem>
               <SelectItem value="2001-5000">2,001 - 5,000 KD per branch</SelectItem>
               <SelectItem value="5000+">5,000+ KD per branch</SelectItem>
