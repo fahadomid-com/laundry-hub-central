@@ -505,6 +505,51 @@ export default function Reports() {
               </div>
             </Card>
 
+            {/* Sales Performance Analysis per Branch */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">Sales Performance by Branch</h3>
+                <Button variant="outline" size="sm" onClick={() => handleExportReport("Branch Sales")}>
+                  <Download className="mr-2 h-4 w-4" />
+                  Export
+                </Button>
+              </div>
+              <div className="space-y-4">
+                {[
+                  { branch: "Main Branch - Salmiya", revenue: "KD 4,850", orders: 142, avgOrder: "KD 34.15", change: 15.2, trend: "up" },
+                  { branch: "Bayan Branch", revenue: "KD 3,420", orders: 98, avgOrder: "KD 34.90", change: 8.7, trend: "up" },
+                  { branch: "Mishrif Branch", revenue: "KD 2,180", orders: 62, avgOrder: "KD 35.16", change: -3.4, trend: "down" },
+                  { branch: "Yarmouk Branch", revenue: "KD 2,000", orders: 40, avgOrder: "KD 50.00", change: 22.1, trend: "up" },
+                ].map((item) => (
+                  <div key={item.branch} className="rounded-lg border border-border p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <p className="font-medium">{item.branch}</p>
+                        <p className="text-sm text-muted-foreground">{item.orders} orders • Avg: {item.avgOrder}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-bold">{item.revenue}</p>
+                        <div className={`flex items-center justify-end text-sm ${item.trend === "up" ? "text-green-600" : "text-red-600"}`}>
+                          {item.trend === "up" ? (
+                            <ArrowUpRight className="mr-1 h-3 w-3" />
+                          ) : (
+                            <ArrowDownRight className="mr-1 h-3 w-3" />
+                          )}
+                          {item.change > 0 ? "+" : ""}{item.change}%
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all" 
+                        style={{ width: `${(parseFloat(item.revenue.replace(/[^0-9.]/g, '')) / 4850) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
             {/* Customer Spend Analysis */}
             <Card className="p-4">
               <div className="flex items-center justify-between mb-4">
