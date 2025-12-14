@@ -395,7 +395,7 @@ const Branches = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>City</Label>
+                    <Label>Governorate</Label>
                     <Input
                       value={newBranch.city}
                       onChange={(e) => setNewBranch({ ...newBranch, city: e.target.value })}
@@ -648,7 +648,7 @@ const Branches = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>City</Label>
+                    <Label>Governorate</Label>
                     <Input
                       value={editingBranch.city}
                       onChange={(e) => setEditingBranch({ ...editingBranch, city: e.target.value })}
