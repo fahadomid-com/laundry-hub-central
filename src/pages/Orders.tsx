@@ -81,6 +81,7 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [locationFilter, setLocationFilter] = useState("all");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   
@@ -97,7 +98,8 @@ export default function Orders() {
       order.customer.toLowerCase().includes(search.toLowerCase()) ||
       order.phone.includes(search);
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesLocation = locationFilter === "all" || order.location === locationFilter;
+    return matchesSearch && matchesStatus && matchesLocation;
   });
 
   const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
@@ -228,6 +230,26 @@ export default function Orders() {
                   <SelectItem value="Ready">Ready</SelectItem>
                   <SelectItem value="Completed">Completed</SelectItem>
                   <SelectItem value="Cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={locationFilter} onValueChange={setLocationFilter}>
+                <SelectTrigger className="w-full sm:w-40 bg-background">
+                  <SelectValue placeholder="Location" />
+                </SelectTrigger>
+                <SelectContent className="bg-popover">
+                  <SelectItem value="all">All Locations</SelectItem>
+                  <SelectItem value="Salmiya">Salmiya</SelectItem>
+                  <SelectItem value="Hawally">Hawally</SelectItem>
+                  <SelectItem value="Kuwait City">Kuwait City</SelectItem>
+                  <SelectItem value="Farwaniya">Farwaniya</SelectItem>
+                  <SelectItem value="Jabriya">Jabriya</SelectItem>
+                  <SelectItem value="Mishref">Mishref</SelectItem>
+                  <SelectItem value="Bayan">Bayan</SelectItem>
+                  <SelectItem value="Fintas">Fintas</SelectItem>
+                  <SelectItem value="Mangaf">Mangaf</SelectItem>
+                  <SelectItem value="Mahboula">Mahboula</SelectItem>
+                  <SelectItem value="Sabah Al Salem">Sabah Al Salem</SelectItem>
+                  <SelectItem value="Rumaithiya">Rumaithiya</SelectItem>
                 </SelectContent>
               </Select>
             </div>
