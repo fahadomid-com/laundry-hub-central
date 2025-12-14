@@ -658,6 +658,7 @@ const Branches = () => {
                   <TableHead>Location</TableHead>
                   <TableHead>Manager</TableHead>
                   <TableHead>Staff</TableHead>
+                  <TableHead>Customers</TableHead>
                   <TableHead>Revenue</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -685,6 +686,12 @@ const Branches = () => {
                         <div className="flex items-center gap-1">
                           <Users className="h-3 w-3 text-muted-foreground" />
                           <span>{stats.staffCount}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Users className="h-3 w-3 text-muted-foreground" />
+                          <span>{stats.customerCount}</span>
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">{stats.revenue.toLocaleString()} KD</TableCell>
