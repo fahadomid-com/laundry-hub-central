@@ -58,11 +58,11 @@ interface Permission {
 }
 
 const initialUsers: User[] = [
-  { id: "1", name: "Ahmed Al-Mansouri", email: "ahmed@printo.press", mobile: "+965 9876 5432", role: "Admin", branch: "All Branches", status: "Active", lastLogin: "2024-01-15 14:30", ipAddress: "192.168.1.100", deviceType: "Desktop" },
-  { id: "2", name: "Fatima Al-Zahra", email: "fatima@printo.press", mobile: "+965 9765 4321", role: "Employee", branch: "Salmiya", status: "Active", lastLogin: "2024-01-15 12:45", ipAddress: "192.168.1.105", deviceType: "Mobile" },
-  { id: "3", name: "Omar Hassan", email: "omar@printo.press", mobile: "+965 9654 3210", role: "Employee", branch: "City", status: "Active", lastLogin: "2024-01-15 09:15", ipAddress: "192.168.1.112", deviceType: "Desktop" },
-  { id: "4", name: "Noura Al-Sabah", email: "noura@printo.press", mobile: "+965 9543 2109", role: "Employee", branch: "Hawally", status: "Inactive", lastLogin: "2024-01-10 16:20", ipAddress: "192.168.1.98", deviceType: "Tablet" },
-  { id: "5", name: "Hasan Al-Rashid", email: "hasan@printo.press", mobile: "+965 9432 1098", role: "Admin", branch: "Salmiya", status: "Active", lastLogin: "2024-01-15 11:30", ipAddress: "192.168.1.120", deviceType: "Desktop" },
+  { id: "1", name: "Ahmed Al-Mansouri", email: "ahmed@saaslaundry.com", mobile: "+965 9876 5432", role: "Admin", branch: "All Branches", status: "Active", lastLogin: "2024-01-15 14:30", ipAddress: "192.168.1.100", deviceType: "Desktop" },
+  { id: "2", name: "Fatima Al-Zahra", email: "fatima@saaslaundry.com", mobile: "+965 9765 4321", role: "Employee", branch: "Salmiya", status: "Active", lastLogin: "2024-01-15 12:45", ipAddress: "192.168.1.105", deviceType: "Mobile" },
+  { id: "3", name: "Omar Hassan", email: "omar@saaslaundry.com", mobile: "+965 9654 3210", role: "Employee", branch: "City", status: "Active", lastLogin: "2024-01-15 09:15", ipAddress: "192.168.1.112", deviceType: "Desktop" },
+  { id: "4", name: "Noura Al-Sabah", email: "noura@saaslaundry.com", mobile: "+965 9543 2109", role: "Employee", branch: "Hawally", status: "Inactive", lastLogin: "2024-01-10 16:20", ipAddress: "192.168.1.98", deviceType: "Tablet" },
+  { id: "5", name: "Hasan Al-Rashid", email: "hasan@saaslaundry.com", mobile: "+965 9432 1098", role: "Admin", branch: "Salmiya", status: "Active", lastLogin: "2024-01-15 11:30", ipAddress: "192.168.1.120", deviceType: "Desktop" },
 ];
 
 const modules = [
