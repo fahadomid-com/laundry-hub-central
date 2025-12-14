@@ -212,6 +212,7 @@ const Branches = () => {
   const [orders] = useState<Order[]>(initialOrders);
   const [finance] = useState<BranchFinance[]>(initialFinance);
   const [searchTerm, setSearchTerm] = useState("");
+  const [branchFilter, setBranchFilter] = useState<string>("all");
   const [customerFilter, setCustomerFilter] = useState<string>("all");
   const [revenueFilter, setRevenueFilter] = useState<string>("all");
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
@@ -258,6 +259,9 @@ const Branches = () => {
 
   const filteredBranches = branches
     .filter((branch) => {
+      const matchesBranchFilter =
+        branchFilter === "all" || branch.id === branchFilter;
+
       const matchesSearch =
         branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         branch.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -279,7 +283,7 @@ const Branches = () => {
         (revenueFilter === "2001-5000" && stats.revenue >= 2001 && stats.revenue <= 5000) ||
         (revenueFilter === "5000+" && stats.revenue > 5000);
 
-      return matchesSearch && matchesCustomerFilter && matchesRevenueFilter;
+      return matchesBranchFilter && matchesSearch && matchesCustomerFilter && matchesRevenueFilter;
     })
     .sort((a, b) => {
       const statsA = getBranchStats(a.id);
@@ -679,6 +683,19 @@ const Branches = () => {
               className="pl-10"
             />
           </div>
+          <Select value={branchFilter} onValueChange={setBranchFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select Branch" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Branches</SelectItem>
+              {branches.map((branch) => (
+                <SelectItem key={branch.id} value={branch.id}>
+                  {branch.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={customerFilter} onValueChange={setCustomerFilter}>
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Branch Customers" />
