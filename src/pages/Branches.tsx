@@ -272,9 +272,7 @@ const Branches = () => {
       const matchesCustomerFilter =
         customerFilter === "all" ||
         customerFilter === "most" ||
-        (customerFilter === "0-5" && stats.customerCount <= 5) ||
-        (customerFilter === "6-10" && stats.customerCount >= 6 && stats.customerCount <= 10) ||
-        (customerFilter === "11+" && stats.customerCount > 10);
+        customerFilter === "lowest";
 
       const matchesRevenueFilter =
         revenueFilter === "all" ||
@@ -292,8 +290,14 @@ const Branches = () => {
       if (customerFilter === "most") {
         return statsB.customerCount - statsA.customerCount;
       }
+      if (customerFilter === "lowest") {
+        return statsA.customerCount - statsB.customerCount;
+      }
       if (revenueFilter === "most") {
         return statsB.revenue - statsA.revenue;
+      }
+      if (revenueFilter === "lowest") {
+        return statsA.revenue - statsB.revenue;
       }
       return 0;
     });
@@ -698,14 +702,12 @@ const Branches = () => {
           </Select>
           <Select value={customerFilter} onValueChange={setCustomerFilter}>
             <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Branch Customers" />
+              <SelectValue placeholder="Customers" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Customers</SelectItem>
-              <SelectItem value="most">Most Customers First</SelectItem>
-              <SelectItem value="0-5">0 - 5 per branch</SelectItem>
-              <SelectItem value="6-10">6 - 10 per branch</SelectItem>
-              <SelectItem value="11+">11+ per branch</SelectItem>
+              <SelectItem value="most">Most Customers</SelectItem>
+              <SelectItem value="lowest">Lowest Customers</SelectItem>
             </SelectContent>
           </Select>
           <Select value={revenueFilter} onValueChange={setRevenueFilter}>
