@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { Car } from "lucide-react";
 
 interface Order {
   id: string;
@@ -7,13 +8,14 @@ interface Order {
   service: string;
   status: "In Progress" | "Completed" | "Pending";
   amount: string;
+  assignedDriver?: string;
 }
 
 const orders: Order[] = [
-  { id: "ORD-001", customer: "John Doe", service: "Dry Cleaning", status: "In Progress", amount: "KD45.50" },
-  { id: "ORD-002", customer: "Jane Smith", service: "Wash & Fold", status: "Completed", amount: "KD28.75" },
+  { id: "ORD-001", customer: "John Doe", service: "Dry Cleaning", status: "In Progress", amount: "KD45.50", assignedDriver: "Ahmed Hassan" },
+  { id: "ORD-002", customer: "Jane Smith", service: "Wash & Fold", status: "Completed", amount: "KD28.75", assignedDriver: "Mohammed Ali" },
   { id: "ORD-003", customer: "Mike Johnson", service: "Alterations", status: "Pending", amount: "KD65.00" },
-  { id: "ORD-004", customer: "Sarah Wilson", service: "Express Wash", status: "In Progress", amount: "KD35.25" },
+  { id: "ORD-004", customer: "Sarah Wilson", service: "Express Wash", status: "In Progress", amount: "KD35.25", assignedDriver: "Khalid Omar" },
 ];
 
 const statusVariantMap = {
@@ -48,6 +50,9 @@ export function RecentOrdersTable() {
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Driver Assigned
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Amount
               </th>
             </tr>
@@ -68,6 +73,16 @@ export function RecentOrdersTable() {
                   <Badge variant={statusVariantMap[order.status]}>
                     {order.status}
                   </Badge>
+                </td>
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-muted-foreground">
+                  {order.assignedDriver ? (
+                    <span className="flex items-center gap-1.5">
+                      <Car className="h-3.5 w-3.5" />
+                      {order.assignedDriver}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground/60">Not assigned</span>
+                  )}
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-foreground">
                   {order.amount}
