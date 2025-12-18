@@ -9,20 +9,22 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, Filter, Download, Droplets, Zap, Truck, Users, MoreHorizontal, Pencil, Trash2, Receipt, Upload, FileSpreadsheet, Link, X } from "lucide-react";
+import { Plus, Search, Filter, Download, Droplets, Zap, Truck, Users, MoreHorizontal, Pencil, Trash2, Receipt, Upload, FileSpreadsheet, Link, X, Building2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const defaultCategories = ["Supplies", "Utilities", "Transport", "Salary", "Maintenance", "Equipment", "Other"];
 
+const branches = ["Salmiya", "Bayan", "Mishrif", "Yarmouk", "Hawally"];
+
 const initialExpenses = [
-  { id: 1, category: "Supplies", description: "Detergent bulk order", amount: 120.00, date: "2025-12-12", status: "Paid" },
-  { id: 2, category: "Utilities", description: "Electricity bill", amount: 85.50, date: "2025-12-10", status: "Paid" },
-  { id: 3, category: "Transport", description: "Fuel for delivery van", amount: 45.00, date: "2025-12-09", status: "Paid" },
-  { id: 4, category: "Salary", description: "Staff wages - Week 49", amount: 850.00, date: "2025-12-08", status: "Paid" },
-  { id: 5, category: "Maintenance", description: "Washing machine repair", amount: 200.00, date: "2025-12-07", status: "Pending" },
-  { id: 6, category: "Supplies", description: "Hangers and packaging", amount: 65.00, date: "2025-12-06", status: "Paid" },
-  { id: 7, category: "Equipment", description: "New iron purchase", amount: 150.00, date: "2025-12-05", status: "Paid" },
-  { id: 8, category: "Utilities", description: "Water bill", amount: 42.00, date: "2025-12-04", status: "Pending" },
+  { id: 1, category: "Supplies", description: "Detergent bulk order", amount: 120.00, date: "2025-12-12", status: "Paid", branch: "Salmiya" },
+  { id: 2, category: "Utilities", description: "Electricity bill", amount: 85.50, date: "2025-12-10", status: "Paid", branch: "Bayan" },
+  { id: 3, category: "Transport", description: "Fuel for delivery van", amount: 45.00, date: "2025-12-09", status: "Paid", branch: "Mishrif" },
+  { id: 4, category: "Salary", description: "Staff wages - Week 49", amount: 850.00, date: "2025-12-08", status: "Paid", branch: "Hawally" },
+  { id: 5, category: "Maintenance", description: "Washing machine repair", amount: 200.00, date: "2025-12-07", status: "Pending", branch: "Salmiya" },
+  { id: 6, category: "Supplies", description: "Hangers and packaging", amount: 65.00, date: "2025-12-06", status: "Paid", branch: "Yarmouk" },
+  { id: 7, category: "Equipment", description: "New iron purchase", amount: 150.00, date: "2025-12-05", status: "Paid", branch: "Bayan" },
+  { id: 8, category: "Utilities", description: "Water bill", amount: 42.00, date: "2025-12-04", status: "Pending", branch: "Salmiya" },
 ];
 
 const getCategoryIcon = (category: string) => {
@@ -52,6 +54,7 @@ export default function Expenses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [branchFilter, setBranchFilter] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
@@ -69,12 +72,18 @@ export default function Expenses() {
   const [category, setCategory] = useState("");
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("Pending");
+  const [branch, setBranch] = useState("");
   
   const { toast } = useToast();
 
   const allCategories = [...defaultCategories, ...customCategories];
 
-  const filteredExpenses = expenses.filter(expense => {
+  // Filter by branch first
+  const branchFilteredExpenses = branchFilter === "all" 
+    ? expenses 
+    : expenses.filter(expense => expense.branch === branchFilter);
+
+  const filteredExpenses = branchFilteredExpenses.filter(expense => {
     const matchesSearch = expense.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           expense.category.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = categoryFilter === "all" || expense.category === categoryFilter;
@@ -82,9 +91,9 @@ export default function Expenses() {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
-  const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-  const paidExpenses = expenses.filter(e => e.status === "Paid").reduce((sum, exp) => sum + exp.amount, 0);
-  const pendingExpenses = expenses.filter(e => e.status === "Pending").reduce((sum, exp) => sum + exp.amount, 0);
+  const totalExpenses = branchFilteredExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const paidExpenses = branchFilteredExpenses.filter(e => e.status === "Paid").reduce((sum, exp) => sum + exp.amount, 0);
+  const pendingExpenses = branchFilteredExpenses.filter(e => e.status === "Pending").reduce((sum, exp) => sum + exp.amount, 0);
 
   const handleAddExpense = (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +108,8 @@ export default function Expenses() {
       amount: parseFloat(amount),
       category,
       date,
-      status
+      status,
+      branch: branch || "Salmiya"
     };
     
     setExpenses([newExpense, ...expenses]);
@@ -136,6 +146,7 @@ export default function Expenses() {
     setCategory(expense.category);
     setDate(expense.date);
     setStatus(expense.status);
+    setBranch(expense.branch);
     setIsEditDialogOpen(true);
   };
 
@@ -148,7 +159,7 @@ export default function Expenses() {
     
     setExpenses(expenses.map(exp => 
       exp.id === editingExpense.id 
-        ? { ...exp, description, amount: parseFloat(amount), category, date, status }
+        ? { ...exp, description, amount: parseFloat(amount), category, date, status, branch }
         : exp
     ));
     toast({ title: "Expense updated", description: "Expense has been updated" });
@@ -163,6 +174,7 @@ export default function Expenses() {
     setCategory("");
     setDate("");
     setStatus("Pending");
+    setBranch("");
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -209,7 +221,19 @@ export default function Expenses() {
             <h1 className="text-2xl font-bold text-foreground">Expenses</h1>
             <p className="text-muted-foreground">Track and manage business expenses</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Select value={branchFilter} onValueChange={setBranchFilter}>
+              <SelectTrigger className="w-[160px] bg-background">
+                <Building2 className="mr-2 h-4 w-4" />
+                <SelectValue placeholder="Branch" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover">
+                <SelectItem value="all">All Branches</SelectItem>
+                {branches.map((b) => (
+                  <SelectItem key={b} value={b}>{b}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -378,17 +402,32 @@ export default function Expenses() {
                       </Select>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label>Status</Label>
-                    <Select value={status} onValueChange={setStatus}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Paid">Paid</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <Select value={status} onValueChange={setStatus}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover">
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Paid">Paid</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Branch</Label>
+                      <Select value={branch} onValueChange={setBranch}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select branch" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover">
+                          {branches.map((b) => (
+                            <SelectItem key={b} value={b}>{b}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="flex gap-2 pt-2">
                     <Button type="submit" className="flex-1">Add Expense</Button>
@@ -417,7 +456,7 @@ export default function Expenses() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-500">KD {paidExpenses.toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground">{expenses.filter(e => e.status === "Paid").length} expenses</p>
+              <p className="text-xs text-muted-foreground">{branchFilteredExpenses.filter(e => e.status === "Paid").length} expenses</p>
             </CardContent>
           </Card>
           <Card>
@@ -426,7 +465,7 @@ export default function Expenses() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-500">KD {pendingExpenses.toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground">{expenses.filter(e => e.status === "Pending").length} expenses</p>
+              <p className="text-xs text-muted-foreground">{branchFilteredExpenses.filter(e => e.status === "Pending").length} expenses</p>
             </CardContent>
           </Card>
         </div>
@@ -480,6 +519,7 @@ export default function Expenses() {
                 <TableRow>
                   <TableHead>Category</TableHead>
                   <TableHead>Description</TableHead>
+                  <TableHead>Branch</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>Status</TableHead>
@@ -500,6 +540,12 @@ export default function Expenses() {
                         </div>
                       </TableCell>
                       <TableCell>{expense.description}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="font-normal">
+                          <Building2 className="mr-1 h-3 w-3" />
+                          {expense.branch}
+                        </Badge>
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{expense.date}</TableCell>
                       <TableCell className="font-medium">KD {expense.amount.toFixed(2)}</TableCell>
                       <TableCell>
@@ -531,7 +577,7 @@ export default function Expenses() {
                 })}
                 {filteredExpenses.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       No expenses found
                     </TableCell>
                   </TableRow>
@@ -621,17 +667,32 @@ export default function Expenses() {
                   </Select>
                 )}
               </div>
-              <div className="space-y-2">
-                <Label>Status</Label>
-                <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="Paid">Paid</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <Select value={status} onValueChange={setStatus}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      <SelectItem value="Pending">Pending</SelectItem>
+                      <SelectItem value="Paid">Paid</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Branch</Label>
+                  <Select value={branch} onValueChange={setBranch}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select branch" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover">
+                      {branches.map((b) => (
+                        <SelectItem key={b} value={b}>{b}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="flex gap-2 pt-2">
                 <Button type="submit" className="flex-1">Update Expense</Button>
