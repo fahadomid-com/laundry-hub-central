@@ -34,6 +34,8 @@ import {
   ArrowDownRight,
   Wallet,
   PiggyBank,
+  Building2,
+  MapPin,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -46,6 +48,7 @@ interface Transaction {
   date: string;
   paymentMethod: string;
   status: "completed" | "pending" | "failed";
+  branch: string;
 }
 
 interface Invoice {
@@ -55,24 +58,27 @@ interface Invoice {
   status: "paid" | "pending" | "overdue";
   dueDate: string;
   issuedDate: string;
+  branch: string;
 }
 
+const branches = ["Salmiya", "Bayan", "Mishrif", "Yarmouk", "Hawally"];
+
 const initialTransactions: Transaction[] = [
-  { id: "1", type: "income", category: "Sales", description: "Order ORD-001", amount: 45.50, date: "Dec 12, 2025", paymentMethod: "Card", status: "completed" },
-  { id: "2", type: "income", category: "Sales", description: "Order ORD-002", amount: 28.75, date: "Dec 12, 2025", paymentMethod: "Cash", status: "completed" },
-  { id: "3", type: "expense", category: "Supplies", description: "Detergent purchase", amount: 120.00, date: "Dec 11, 2025", paymentMethod: "Card", status: "completed" },
-  { id: "4", type: "expense", category: "Utilities", description: "Electricity bill", amount: 85.00, date: "Dec 10, 2025", paymentMethod: "Bank Transfer", status: "completed" },
-  { id: "5", type: "income", category: "Sales", description: "Order ORD-003", amount: 65.00, date: "Dec 10, 2025", paymentMethod: "Card", status: "pending" },
-  { id: "6", type: "expense", category: "Salary", description: "Staff salaries", amount: 1500.00, date: "Dec 1, 2025", paymentMethod: "Bank Transfer", status: "completed" },
-  { id: "7", type: "income", category: "Sales", description: "Order ORD-004", amount: 35.25, date: "Dec 9, 2025", paymentMethod: "Cash", status: "completed" },
-  { id: "8", type: "expense", category: "Maintenance", description: "Machine repair", amount: 200.00, date: "Dec 8, 2025", paymentMethod: "Cash", status: "completed" },
+  { id: "1", type: "income", category: "Sales", description: "Order ORD-001", amount: 45.50, date: "Dec 12, 2025", paymentMethod: "Card", status: "completed", branch: "Salmiya" },
+  { id: "2", type: "income", category: "Sales", description: "Order ORD-002", amount: 28.75, date: "Dec 12, 2025", paymentMethod: "Cash", status: "completed", branch: "Bayan" },
+  { id: "3", type: "expense", category: "Supplies", description: "Detergent purchase", amount: 120.00, date: "Dec 11, 2025", paymentMethod: "Card", status: "completed", branch: "Mishrif" },
+  { id: "4", type: "expense", category: "Utilities", description: "Electricity bill", amount: 85.00, date: "Dec 10, 2025", paymentMethod: "Bank Transfer", status: "completed", branch: "Salmiya" },
+  { id: "5", type: "income", category: "Sales", description: "Order ORD-003", amount: 65.00, date: "Dec 10, 2025", paymentMethod: "Card", status: "pending", branch: "Yarmouk" },
+  { id: "6", type: "expense", category: "Salary", description: "Staff salaries", amount: 1500.00, date: "Dec 1, 2025", paymentMethod: "Bank Transfer", status: "completed", branch: "Hawally" },
+  { id: "7", type: "income", category: "Sales", description: "Order ORD-004", amount: 35.25, date: "Dec 9, 2025", paymentMethod: "Cash", status: "completed", branch: "Bayan" },
+  { id: "8", type: "expense", category: "Maintenance", description: "Machine repair", amount: 200.00, date: "Dec 8, 2025", paymentMethod: "Cash", status: "completed", branch: "Salmiya" },
 ];
 
 const initialInvoices: Invoice[] = [
-  { id: "INV-001", customer: "ABC Corp", amount: 450.00, status: "paid", dueDate: "Dec 15, 2025", issuedDate: "Dec 1, 2025" },
-  { id: "INV-002", customer: "XYZ Ltd", amount: 320.00, status: "pending", dueDate: "Dec 20, 2025", issuedDate: "Dec 5, 2025" },
-  { id: "INV-003", customer: "Tech Inc", amount: 180.00, status: "overdue", dueDate: "Dec 5, 2025", issuedDate: "Nov 20, 2025" },
-  { id: "INV-004", customer: "Global Co", amount: 275.00, status: "pending", dueDate: "Dec 25, 2025", issuedDate: "Dec 10, 2025" },
+  { id: "INV-001", customer: "ABC Corp", amount: 450.00, status: "paid", dueDate: "Dec 15, 2025", issuedDate: "Dec 1, 2025", branch: "Salmiya" },
+  { id: "INV-002", customer: "XYZ Ltd", amount: 320.00, status: "pending", dueDate: "Dec 20, 2025", issuedDate: "Dec 5, 2025", branch: "Bayan" },
+  { id: "INV-003", customer: "Tech Inc", amount: 180.00, status: "overdue", dueDate: "Dec 5, 2025", issuedDate: "Nov 20, 2025", branch: "Mishrif" },
+  { id: "INV-004", customer: "Global Co", amount: 275.00, status: "pending", dueDate: "Dec 25, 2025", issuedDate: "Dec 10, 2025", branch: "Yarmouk" },
 ];
 
 export default function Finance() {
@@ -80,6 +86,7 @@ export default function Finance() {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [addTransactionOpen, setAddTransactionOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState("all");
+  const [branchFilter, setBranchFilter] = useState("all");
   const { toast } = useToast();
 
   const [newTransaction, setNewTransaction] = useState({
@@ -88,14 +95,24 @@ export default function Finance() {
     description: "",
     amount: 0,
     paymentMethod: "Cash",
+    branch: "",
   });
 
-  const totalIncome = transactions.filter((t) => t.type === "income" && t.status === "completed").reduce((sum, t) => sum + t.amount, 0);
-  const totalExpenses = transactions.filter((t) => t.type === "expense" && t.status === "completed").reduce((sum, t) => sum + t.amount, 0);
-  const netProfit = totalIncome - totalExpenses;
-  const pendingPayments = transactions.filter((t) => t.status === "pending").reduce((sum, t) => sum + t.amount, 0);
+  // Filter data by branch
+  const branchFilteredTransactions = branchFilter === "all" 
+    ? transactions 
+    : transactions.filter((t) => t.branch === branchFilter);
+  
+  const branchFilteredInvoices = branchFilter === "all"
+    ? invoices
+    : invoices.filter((inv) => inv.branch === branchFilter);
 
-  const filteredTransactions = transactions.filter((t) => {
+  const totalIncome = branchFilteredTransactions.filter((t) => t.type === "income" && t.status === "completed").reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = branchFilteredTransactions.filter((t) => t.type === "expense" && t.status === "completed").reduce((sum, t) => sum + t.amount, 0);
+  const netProfit = totalIncome - totalExpenses;
+  const pendingPayments = branchFilteredTransactions.filter((t) => t.status === "pending").reduce((sum, t) => sum + t.amount, 0);
+
+  const filteredTransactions = branchFilteredTransactions.filter((t) => {
     return typeFilter === "all" || t.type === typeFilter;
   });
 
@@ -108,7 +125,7 @@ export default function Finance() {
       status: "completed",
     };
     setTransactions((prev) => [transaction, ...prev]);
-    setNewTransaction({ type: "income", category: "", description: "", amount: 0, paymentMethod: "Cash" });
+    setNewTransaction({ type: "income", category: "", description: "", amount: 0, paymentMethod: "Cash", branch: "" });
     setAddTransactionOpen(false);
     toast({ title: "Transaction added", description: `${transaction.type === "income" ? "Income" : "Expense"} of KD${transaction.amount.toFixed(2)} recorded` });
   };
@@ -135,6 +152,18 @@ export default function Finance() {
             <p className="mt-1 text-muted-foreground">Track revenue, expenses, and payments</p>
           </div>
           <div className="flex gap-2">
+            <Select value={branchFilter} onValueChange={setBranchFilter}>
+              <SelectTrigger className="w-[160px] bg-background">
+                <Building2 className="mr-2 h-4 w-4" />
+                <SelectValue placeholder="Branch" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover">
+                <SelectItem value="all">All Branches</SelectItem>
+                {branches.map((branch) => (
+                  <SelectItem key={branch} value={branch}>{branch}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Button variant="outline" onClick={handleExportReport}>
               <Download className="mr-2 h-4 w-4" />
               Export Report
@@ -253,8 +282,13 @@ export default function Finance() {
                       </div>
                       <div>
                         <p className="font-medium">{transaction.description}</p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                           <span>{transaction.category}</span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {transaction.branch}
+                          </span>
                           <span>•</span>
                           <span>{transaction.date}</span>
                           <span>•</span>
@@ -286,7 +320,7 @@ export default function Finance() {
             <Card className="p-4">
               <h3 className="font-semibold mb-4">Invoices</h3>
               <div className="space-y-3">
-                {invoices.map((invoice) => (
+                {branchFilteredInvoices.map((invoice) => (
                   <div
                     key={invoice.id}
                     className="flex items-center justify-between rounded-lg border border-border p-4"
@@ -297,7 +331,14 @@ export default function Finance() {
                       </div>
                       <div>
                         <p className="font-medium">{invoice.id}</p>
-                        <p className="text-sm text-muted-foreground">{invoice.customer}</p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span>{invoice.customer}</span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {invoice.branch}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
